@@ -307,7 +307,72 @@ check('ex4.4e nullspace at l=0: (1,-1,0),(1,0,-1); at l=-3: (1,1,1)',
       and same(mul(Lm(-3), mat([[1], [1], [1]])), z3))
 
 
-# ---------- summary ----------
+# ---------- Chapter 5: eigenvalues and eigenvectors ----------
+
+A = mat([[3, -1], [-1, 3]])
+check('ex5.2 eigen 2 (vector (1,1)) and 4 (vector (1,-1)); tr/det check',
+      det(mat([[3 - 2, -1], [-1, 3 - 2]])) == 0
+      and det(mat([[3 - 4, -1], [-1, 3 - 4]])) == 0
+      and same(mul(A, mat([[1], [1]])), mat([[2], [2]]))
+      and same(mul(A, mat([[1], [-1]])), mat([[4], [-4]]))
+      and 2 + 4 == 6 and det(A) == 8)
+
+check('ex5.1 Schmidt result (1,1,0),(1,-1,2),(-1,1,1) pairwise orthogonal',
+      all(x == 0 for x in [
+          1 * 1 + 1 * -1 + 0 * 2,
+          1 * -1 + 1 * 1 + 0 * 1,
+          1 * -1 + -1 * 1 + 2 * 1]))
+
+A = mat([[4, 0, 0], [0, 3, 1], [0, 1, 3]])
+P = mat([[1, 0, 0], [0, 1, 1], [0, 1, -1]])
+Lam = mat([[4, 0, 0], [0, 4, 0], [0, 0, 2]])
+check('ex5.3 eigenvectors of diag-block A; P^-1 A P = diag(4,4,2)',
+      det(mat([[0, 0, 0], [0, -1, 1], [0, 1, -1]])) == 0
+      and same(mul(A, mat([[1], [0], [0]])), mat([[4], [0], [0]]))
+      and same(mul(A, mat([[0], [1], [1]])), mat([[0], [4], [4]]))
+      and same(mul(A, mat([[0], [1], [-1]])), mat([[0], [2], [-2]]))
+      and same(mul(mul(inverse(P), A), P), Lam))
+
+Ak = eye(3)
+for _ in range(4):
+    Ak = mul(Ak, A)
+formula = mat([[4 ** 4, 0, 0],
+               [0, (4 ** 4 + 2 ** 4) // 2, (4 ** 4 - 2 ** 4) // 2],
+               [0, (4 ** 4 - 2 ** 4) // 2, (4 ** 4 + 2 ** 4) // 2]])
+check('ex5.3 A^4 matches closed form (4^k +- 2^k)/2', same(Ak, formula))
+
+A = mat([[0, 1, 1], [1, 0, 1], [1, 1, 0]])
+B = mat([[1, 1, 1], [1, -1, 1], [1, 0, -2]])  # columns: xi1, beta2, beta3
+check('ex5.4 eigencolumns orthogonal (squared lengths 3,2,6); eigen 2,-1,-1',
+      same(mul(transpose(B), B), mat([[3, 0, 0], [0, 2, 0], [0, 0, 6]]))
+      and same(mul(mul(transpose(B), A), B),
+               mat([[6, 0, 0], [0, -2, 0], [0, 0, -6]])))
+
+A = mat([[2, 1], [1, 2]])
+check('ex5.1e eigen 1 (1,-1) and 3 (1,1)',
+      same(mul(A, mat([[1], [-1]])), mat([[1], [-1]]))
+      and same(mul(A, mat([[1], [1]])), mat([[3], [3]])))
+
+P10 = mul(mul(mat([[1, 1], [-1, 1]]),
+              mat([[1, 0], [0, 3 ** 10]])),
+          mat([[F(1, 2), F(-1, 2)], [F(1, 2), F(1, 2)]]))
+D10 = eye(2)
+for _ in range(10):
+    D10 = mul(D10, A)
+check('ex5.5e A^10 matches P diag(1,3^10) P^-1', same(D10, P10))
+
+A = mat([[2, 0, 0], [0, 3, 1], [0, 1, 3]])
+check('ex5.4e eigen 2 (double) and 4; eigenvectors (1,0,0),(0,1,-1),(0,1,1)',
+      det(mat([[0, 0, 0], [0, 1, 1], [0, 1, 1]])) == 0
+      and det(mat([[-2, 0, 0], [0, -1, 1], [0, 1, -1]])) == 0
+      and same(mul(A, mat([[1], [0], [0]])), mat([[2], [0], [0]]))
+      and same(mul(A, mat([[0], [1], [-1]])), mat([[0], [2], [-2]]))
+      and same(mul(A, mat([[0], [1], [1]])), mat([[0], [4], [4]])))
+
+S = mat([[1, -1], [1, 1]])
+check('ex5.3e (1/sqrt2)[[1,-1],[1,1]] orthogonal: S^T S = 2E',
+      same(mul(transpose(S), S), mat([[2, 0], [0, 2]])))
+
 
 if all(RESULTS):
     print(f'\nAll {len(RESULTS)} checks passed.')
