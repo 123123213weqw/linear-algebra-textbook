@@ -1,0 +1,68 @@
+# Compile the textbook PDF with tectonic and publish it to GitHub Pages.
+name: Build PDF
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tectonic
+        run: |
+          curl -L -o tectonic.tar.gz \
+            "https://github.com/tectonic-typesetting/tectonic/releases/download/tectonic%400.15.0/tectonic-0.15.0-x86_64-unknown-linux-musl.tar.gz"
+          tar xzf tectonic.tar.gz
+          sudo install -m 755 tectonic /usr/local/bin/tectonic
+          tectonic --version
+
+      - name: Cache tectonic package bundle
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/Tectonic
+          key: tectonic-${{ runner.os }}-${{ hashFiles('main.tex', 'chapters/*.tex') }}
+          restore-keys: tectonic-${{ runner.os }}-
+
+      - name: Compile PDF
+        run: tectonic main.tex
+
+      - name: Run numeric verification of worked examples
+        run: python3 tools/verify_examples.py
+
+      - name: Assemble Pages site
+        run: |
+          mkdir -p _site
+          cp main.pdf _site/linear-algebra.pdf
+          cp site/index.html _site/index.html
+
+      - name: Upload PDF artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linear-algebra-pdf
+          path: main.pdf
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

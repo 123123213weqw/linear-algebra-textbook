@@ -1,0 +1,10 @@
+# LaTeX build outputs (PDF is rebuilt by CI; never commit it)
+*.pdf
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+
+# macOS
+.DS_Store

@@ -1,0 +1,85 @@
+% 线性代数 — 中文教材草稿.
+% Engine: XeTeX (tectonic / xelatex). Chinese via ctexbook with the fandol font set,
+% which renders identically on macOS, Linux, and CI.
+\documentclass[11pt, fontset=fandol]{ctexbook}
+
+\usepackage{amsmath, amssymb, amsthm, mathtools}
+\usepackage{extarrows}   % \xlongequal{...}
+\usepackage{mathdots}    % \iddots
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, calc}
+\usepackage[a4paper, top=2.6cm, bottom=2.6cm, left=2.4cm, right=2.4cm]{geometry}
+\usepackage{enumitem}
+\usepackage{xcolor}      % color mixing (blue!45!black) for hyperref links
+\usepackage{tcolorbox}
+\tcbuselibrary{skins, breakable}
+\usepackage[colorlinks=true, linkcolor=blue!45!black, citecolor=blue!45!black, urlcolor=blue!45!black]{hyperref}
+\hypersetup{bookmarksnumbered=true, pdfstartview=FitH}
+
+% ---------- theorem-like environments ----------
+\theoremstyle{plain}
+\newtheorem{theorem}{定理}[chapter]
+\newtheorem{lemma}[theorem]{引理}
+\newtheorem{corollary}[theorem]{推论}
+\newtheorem{proposition}[theorem]{命题}
+\newtheorem{example}{例}[chapter]
+\newtheorem{property}{性质}[chapter]
+
+\theoremstyle{definition}
+\newtheorem{definition}{定义}[chapter]
+
+\theoremstyle{remark}
+\newtheorem{remark}{注}[chapter]
+
+\renewcommand{\proofname}{证}
+
+% ---------- macros ----------
+\newcommand{\trans}{^{\mathrm{T}}}                 % transpose: A\trans
+\newcommand{\R}{\mathbb{R}}
+\DeclareMathOperator{\rank}{r}                     % \rank(A) prints r(A)
+
+% End-of-chapter exercise heading; #1 is the Chinese chapter numeral.
+\newcommand{\chapterexercises}[1]{%
+  \section*{习题#1}
+  \addcontentsline{toc}{section}{习题#1}
+}
+
+\setlength{\parskip}{2pt}
+
+% Question box: the title is a question readers commonly stumble on; the body answers it.
+\newtcolorbox{qa}[1]{enhanced, breakable,
+  colback=gray!7, colframe=black!60, boxrule=0.5pt, arc=2pt,
+  left=7pt, right=7pt, top=5pt, bottom=5pt,
+  title={问：#1}, coltitle=white, colbacktitle=black!75,
+  fonttitle=\bfseries\small}
+
+% Insight box for the geometric / essential viewpoint.
+\newtcolorbox{insight}[1][本质]{enhanced, breakable,
+  colback=yellow!10, colframe=yellow!55!black, boxrule=0.5pt, arc=2pt,
+  left=7pt, right=7pt, top=5pt, bottom=5pt,
+  title={#1}, coltitle=white, colbacktitle=yellow!45!black,
+  fonttitle=\bfseries\small}
+
+\title{\huge 线性代数}
+\author{《线性代数》编写组}   % TODO: replace with the real author name
+\date{2026年10月 \quad 草稿 v0.1（供审阅）}
+
+\begin{document}
+
+\maketitle
+
+\frontmatter
+\include{chapters/preface}
+\tableofcontents
+
+\mainmatter
+\include{chapters/ch1-determinants}
+\include{chapters/ch2-matrices}
+\include{chapters/ch3-vectors}
+% Stepwise build: re-enable each include as the chapter is written.
+% \include{chapters/ch4-linear-systems}
+% \include{chapters/ch5-eigen}
+% \include{chapters/ch6-quadratic}
+% \include{chapters/appendix-answers}
+
+\end{document}

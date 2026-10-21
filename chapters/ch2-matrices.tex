@@ -1,0 +1,703 @@
+\chapter{矩阵及其运算}
+
+矩阵是线性代数的核心研究对象。本章介绍矩阵的概念与运算、逆矩阵、分块矩阵、
+初等变换与初等矩阵，以及矩阵的秩。
+
+\begin{insight}[观点：矩阵不只是数表，更是对空间的变换]
+本书始终采用双重观点：矩阵既是一张按行列排好的数表，又是\textbf{对空间的一次
+线性操作}——它把每个输入向量移到新的位置，且保持向量的加法与数乘（形象地说：
+保持网格线平行、等距）。例如 $\begin{pmatrix} 0 & -1 \\ 1 & 0 \end{pmatrix}$ 把
+平面绕原点逆时针旋转 $90^\circ$；第一章的行列式，正是这种操作对面积（体积）
+的缩放因子。带着这个图像去读本章的每一条定义，“为什么这样规定”大多会
+有着落；遇到代数上费解的结论，也先用变换的图像想一想。
+\end{insight}
+
+\section{矩阵的概念}
+
+\begin{definition}\label{def:matrix}
+由 $m\times n$ 个数 $a_{ij}$（$i=1,2,\cdots,m$；$j=1,2,\cdots,n$）排成的
+$m$ 行 $n$ 列的数表
+\[
+  A=\begin{pmatrix}
+    a_{11} & a_{12} & \cdots & a_{1n} \\
+    a_{21} & a_{22} & \cdots & a_{2n} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    a_{m1} & a_{m2} & \cdots & a_{mn}
+  \end{pmatrix}
+\]
+称为 $m$ 行 $n$ 列矩阵，简称 $m\times n$ \textbf{矩阵}。这 $mn$ 个数称为矩阵
+$A$ 的元素，$a_{ij}$ 位于第 $i$ 行第 $j$ 列。元素为实数的矩阵称为实矩阵，
+本书中的矩阵除特别说明外均指实矩阵。
+\end{definition}
+
+矩阵常用大写字母 $A,B,C,\cdots$ 表示，也可记作 $A=(a_{ij})_{m\times n}$ 或
+$A_{m\times n}$。行数与列数相等的矩阵称为\textbf{方阵}，$n$ 行 $n$ 列的方阵
+简称为 $n$ 阶方阵。
+
+两个矩阵若行数、列数分别相同，则称它们为\textbf{同型矩阵}；若两个同型矩阵的
+对应元素都相等，则称两矩阵\textbf{相等}。
+
+常见的特殊矩阵有：
+\begin{itemize}[itemsep=1pt]
+  \item \textbf{零矩阵} $O$：所有元素都是 $0$ 的矩阵；
+  \item \textbf{单位矩阵} $E$（或记作 $E_n$）：主对角线上元素都是 $1$、其余元素
+        都是 $0$ 的 $n$ 阶方阵；
+  \item \textbf{对角矩阵}（数量矩阵）：主对角线以外的元素都是 $0$ 的方阵，
+        记作 $\operatorname{diag}(d_1,d_2,\cdots,d_n)$；当 $d_1=\cdots=d_n=k$ 时
+        称为数量矩阵 $kE$；
+  \item \textbf{上（下）三角矩阵}：主对角线以下（上）的元素都是 $0$ 的方阵；
+  \item \textbf{对称矩阵}：满足 $A\trans=A$ 的方阵；\textbf{反对称矩阵}：
+        满足 $A\trans=-A$ 的方阵。
+\end{itemize}
+
+只有一行（列）的矩阵分别称为\textbf{行向量}与\textbf{列向量}。
+
+必须强调：方阵与行列式是两个不同的概念。$n$ 阶方阵是一个数表，而 $n$ 阶
+行列式是按第一章规则由该数表算出的一个数，记作 $|A|$ 或 $\det A$。
+
+\section{矩阵的运算}\label{sec:matrix-ops}
+
+\textbf{（1）加法}：设 $A=(a_{ij})$、$B=(b_{ij})$ 是两个 $m\times n$ 矩阵，
+定义
+\[
+  A+B=(a_{ij}+b_{ij})_{m\times n}.
+\]
+只有同型矩阵才能相加。加法满足交换律与结合律；$A+O=A$；记 $-A=(-a_{ij})$，
+则 $A+(-A)=O$，矩阵的减法定义为 $A-B=A+(-B)$。
+
+\textbf{（2）数乘}：设 $\lambda$ 为数，定义 $\lambda A=(\lambda a_{ij})$。
+数乘满足结合律以及对矩阵加法、数加法的分配律。
+
+\textbf{（3）乘法}：设 $A=(a_{ij})$ 是 $m\times s$ 矩阵，$B=(b_{ij})$ 是
+$s\times n$ 矩阵，定义 $AB$ 为 $m\times n$ 矩阵 $(c_{ij})$，其中
+\begin{equation}\label{eq:matrix-multiply}
+  c_{ij}=a_{i1}b_{1j}+a_{i2}b_{2j}+\cdots+a_{is}b_{sj}
+        =\sum_{k=1}^{s}a_{ik}b_{kj}.
+\end{equation}
+即乘积的第 $i$ 行第 $j$ 列元素等于左矩阵第 $i$ 行与右矩阵第 $j$ 列对应元素
+乘积之和。只有左矩阵的列数等于右矩阵的行数时，两矩阵才能相乘。
+
+\begin{insight}[乘法的几何意义：列的组合与变换的复合]
+把 $A$ 的第 $j$ 列记作 $a_j$，则规则 \eqref{eq:matrix-multiply} 等价于
+\[
+  Ax=x_1a_1+x_2a_2+\cdots+x_sa_s ,
+\]
+即：\textbf{$Ax$ 就是把 $x$ 的分量当作权重，对 $A$ 的各列作线性组合}。于是
+一个矩阵完整描述了一个线性变换：把标准基 $\varepsilon_j$ 输入，输出恰是 $A$
+的第 $j$ 列——\textbf{矩阵的列，就是基向量被变换后到达的位置}。矩阵乘积
+$BA$ 则是“先做 $A$，再做 $B$”的复合变换：这解释了结合律为何自然成立，
+也预示了交换律为何一般不成立（先旋转后剪切，与先剪切后旋转，结果不同）。
+\end{insight}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[>=Stealth, scale=0.85]
+  \begin{scope}
+    \draw[gray!50] (-0.5,-0.5) grid[step=0.5] (2.5,2.5);
+    \draw[->] (-0.6,0) -- (2.8,0);
+    \draw[->] (0,-0.6) -- (0,2.8);
+    \draw[very thick, blue!60!black, ->] (0,0) -- (1,0) node[below right] {$\varepsilon_1$};
+    \draw[very thick, red!70!black, ->] (0,0) -- (0,1) node[left] {$\varepsilon_2$};
+    \node[below] at (1,-1.15) {变换前：均匀方格};
+  \end{scope}
+  \draw[->, very thick, gray] (3.6,1) -- (5.2,1)
+        node[midway, above] {$A=\begin{pmatrix} 1 & 1 \\ 0 & 1 \end{pmatrix}$};
+  \begin{scope}[xshift=6.4cm]
+    \foreach \y in {0.5,1,1.5,2}
+      \draw[gray!50] (-0.3,\y) -- (3.4,\y);
+    \foreach \k in {0,0.5,1,1.5,2,2.5}
+      \draw[gray!50] (\k,0) -- (\k,0) ++(2.6,2.6);
+    \draw[->] (-0.6,0) -- (3.9,0);
+    \draw[->] (0,-0.6) -- (0,2.8);
+    \draw[very thick, blue!60!black, ->] (0,0) -- (1,0) node[below] {$(1,0)\trans$};
+    \draw[very thick, red!70!black, ->] (0,0) -- (1,1) node[above right] {$(1,1)\trans$};
+    \node[below] at (1.6,-1.15) {变换后：方格被“剪切”推斜};
+  \end{scope}
+\end{tikzpicture}
+\caption{剪切变换 $A=\begin{pmatrix} 1 & 1 \\ 0 & 1 \end{pmatrix}$：
+$\varepsilon_1$ 不动，$\varepsilon_2$ 移到 $(1,1)\trans$，整张方格被推斜，
+但网格线仍平行、等距。面积因子 $|A|=1$，与例~\ref{ex:power} 中 $A$ 的幂的
+行为一致。}
+\label{fig:shear}
+\end{figure}
+
+矩阵乘法满足结合律 $(AB)C=A(BC)$、左分配律 $A(B+C)=AB+AC$、右分配律
+$(B+C)A=BA+CA$，以及 $\lambda(AB)=(\lambda A)B=A(\lambda B)$；对任意
+$m\times n$ 矩阵 $A$，有 $E_mA=A=AE_n$。
+
+\begin{remark}\label{rmk:no-commute}
+与数的乘法不同，矩阵乘法\textbf{不满足交换律}。首先，当 $A$ 的列数不等于 $B$
+的行数时 $AB$ 有意义而 $BA$ 未必有意义；其次，即使 $AB$ 与 $BA$ 都有意义，
+它们也未必是同型矩阵；最后，即使同型，也未必相等。
+\end{remark}
+
+\begin{example}
+设 $A=\begin{pmatrix} 1 & 0 \\ 1 & 1 \end{pmatrix}$，
+$B=\begin{pmatrix} 1 & 1 \\ 0 & 1 \end{pmatrix}$，求 $AB$ 与 $BA$。
+\end{example}
+\begin{proof}[解]
+\[
+  AB=\begin{pmatrix} 1 & 1 \\ 1 & 2 \end{pmatrix},
+  \qquad
+  BA=\begin{pmatrix} 2 & 1 \\ 1 & 1 \end{pmatrix},
+\]
+可见 $AB\neq BA$。
+\end{proof}
+
+由交换律不成立还可推出：一般的“平方差公式” $(A+B)(A-B)=A^2-B^2$ 对矩阵
+不成立（右边会多出交叉项），只有当 $AB=BA$ 时才有 $(A+B)(A-B)=A^2-B^2$。
+
+\begin{remark}\label{rmk:no-cancel}
+由 $AB=O$ 一般不能推出 $A=O$ 或 $B=O$，从而矩阵乘法\textbf{不满足消去律}：
+由 $AB=AC$ 且 $A\neq O$ 一般不能推出 $B=C$。
+\end{remark}
+
+\begin{example}
+设 $A=\begin{pmatrix} 1 & 1 \\ 1 & 1 \end{pmatrix}$，
+$B=\begin{pmatrix} 1 & -1 \\ -1 & 1 \end{pmatrix}$，则
+\[
+  AB=\begin{pmatrix} 1-1 & -1+1 \\ 1-1 & -1+1 \end{pmatrix}
+    =\begin{pmatrix} 0 & 0 \\ 0 & 0 \end{pmatrix},
+\]
+而 $A,B$ 都不是零矩阵。
+\end{example}
+
+\begin{qa}{$AB=O$ 却 $A\neq O$、$B\neq O$，几何上是怎么回事？消去律为什么失效？}
+答：把 $B$ 按列看：$AB=(Ab_1,\cdots,Ab_n)$，故 $AB=O$ 说明\textbf{$B$ 的每一列
+都被 $A$ 变换成了零向量}。只要 $A$ 把某些方向“压扁”（例如
+$\operatorname{diag}(1,0)$ 把整个 $x_2$ 轴压到原点），取 $B$ 的列全部落在被
+压扁的方向上，乘积就是零，而两个因子都非零。消去律失效是同一件事：
+$AB=AC$ 即 $A(B-C)=O$，$B-C$ 的列可能恰好都落在被压扁的方向上，未必为零。
+\end{qa}
+
+\textbf{（4）转置}：把矩阵 $A$ 的行换成同序号的列所得的矩阵称为 $A$ 的
+\textbf{转置矩阵}，记作 $A\trans$。转置满足
+\[
+  (A\trans)\trans=A,\qquad (A+B)\trans=A\trans+B\trans,\qquad
+  (\lambda A)\trans=\lambda A\trans,\qquad (AB)\trans=B\trans A\trans .
+\]
+最后一个等式证明如下：$(AB)\trans$ 的 $(i,j)$ 元为 $(AB)_{ji}
+=\sum_k a_{jk}b_{ki}$，而 $B\trans A\trans$ 的 $(i,j)$ 元为
+$\sum_k (B\trans)_{ik}(A\trans)_{kj}=\sum_k b_{ki}a_{jk}$，两者相同。
+
+\textbf{（5）方阵的幂与多项式}：设 $A$ 为 $n$ 阶方阵，定义
+$A^k=A\cdots A$（$k$ 个相乘，$k$ 为正整数），并约定 $A^0=E$。由于乘法结合律
+成立，有 $A^kA^l=A^{k+l}$，$(A^k)^l=A^{kl}$；但由于交换律不成立，
+$(A+B)^2=A^2+AB+BA+B^2$ 而非 $A^2+2AB+B^2$。
+
+\begin{example}\label{ex:power}
+设 $A=\begin{pmatrix} 1 & 1 \\ 0 & 1 \end{pmatrix}$，证明
+$A^n=\begin{pmatrix} 1 & n \\ 0 & 1 \end{pmatrix}$（$n$ 为正整数）。
+\end{example}
+\begin{proof}
+$n=1$ 时显然。设结论对 $n$ 成立，则
+\[
+  A^{n+1}=A^nA
+  =\begin{pmatrix} 1 & n \\ 0 & 1 \end{pmatrix}
+   \begin{pmatrix} 1 & 1 \\ 0 & 1 \end{pmatrix}
+  =\begin{pmatrix} 1 & n+1 \\ 0 & 1 \end{pmatrix},
+\]
+由归纳法结论成立。
+\end{proof}
+
+设 $f(x)=a_mx^m+\cdots+a_1x+a_0$ 为多项式，$A$ 为方阵，称
+$f(A)=a_mA^m+\cdots+a_1A+a_0E$ 为 $A$ 的\textbf{矩阵多项式}。
+
+\begin{example}
+设 $A$ 为对称矩阵，$B$ 为反对称矩阵，$AB$ 何时为对称矩阵？
+\end{example}
+\begin{proof}[解]
+$(AB)\trans=B\trans A\trans=-BA$。要使 $AB$ 对称，即 $-BA=AB$，等价于
+$AB=-BA=BA$，即 $A$ 与 $B$ 可交换。
+\end{proof}
+
+\section{逆矩阵}\label{sec:inverse}
+
+数的乘法有逆运算除法，矩阵乘法的“逆运算”通过逆矩阵实现。
+
+\begin{definition}\label{def:inverse}
+设 $A$ 为 $n$ 阶方阵。若存在 $n$ 阶方阵 $B$，使
+\[
+  AB=BA=E,
+\]
+则称 $A$ \textbf{可逆}，并称 $B$ 为 $A$ 的\textbf{逆矩阵}。
+\end{definition}
+
+首先，若 $A$ 可逆，则逆矩阵唯一：设 $B,C$ 都是 $A$ 的逆矩阵，则
+$B=BE=B(AC)=(BA)C=EC=C$。因此把 $A$ 的逆矩阵记作 $A^{-1}$。
+
+方阵的逆满足（设下列方阵都可逆）：
+\[
+  (A^{-1})^{-1}=A,\qquad (AB)^{-1}=B^{-1}A^{-1},\qquad
+  (\lambda A)^{-1}=\lambda^{-1}A^{-1},\qquad
+  (A\trans)^{-1}=(A^{-1})\trans,
+\]
+且 $|A^{-1}|=|A|^{-1}$。其中 $(AB)^{-1}=B^{-1}A^{-1}$ 的验证：
+$(B^{-1}A^{-1})(AB)=B^{-1}(A^{-1}A)B=B^{-1}B=E$，同理可验另一侧。
+
+下面给出可逆的充要条件与逆矩阵的计算公式。对 $n$ 阶方阵 $A$，把 $|A|$ 的
+各个元素的代数余子式按如下方式排成的 $n$ 阶方阵
+\[
+  A^*=\begin{pmatrix}
+    A_{11} & A_{21} & \cdots & A_{n1} \\
+    A_{12} & A_{22} & \cdots & A_{n2} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    A_{1n} & A_{2n} & \cdots & A_{nn}
+  \end{pmatrix}
+\]
+称为 $A$ 的\textbf{伴随矩阵}（注意代数余子式的行、列位置恰好互换）。
+
+\begin{lemma}\label{lem:adjugate}
+设 $A$ 为 $n$ 阶方阵，$A^*$ 为其伴随矩阵，则
+\[
+  AA^*=A^*A=|A|E .
+\]
+\end{lemma}
+\begin{proof}
+$AA^*$ 的 $(i,k)$ 元为 $\sum_{j=1}^{n}a_{ij}A_{kj}$。当 $k=i$ 时由第一章
+展开定理（定理~\ref{thm:expansion}）该和等于 $|A|$；当 $k\neq i$ 时由其推论
+（推论~\ref{cor:alien-cofactor}）该和等于 $0$。故 $AA^*=|A|E$。同理由按列
+展开的对应结论得 $A^*A=|A|E$。
+\end{proof}
+
+\begin{theorem}\label{thm:inverse-det}
+方阵 $A$ 可逆的充分必要条件是 $|A|\neq 0$，且当 $|A|\neq 0$ 时
+\[
+  A^{-1}=\frac{1}{|A|}A^* .
+\]
+\end{theorem}
+\begin{proof}
+若 $|A|\neq 0$，由引理~\ref{lem:adjugate} 得
+$A\big(\tfrac{1}{|A|}A^*\big)=\big(\tfrac{1}{|A|}A^*\big)A=E$，故 $A$ 可逆且
+$A^{-1}=\tfrac{1}{|A|}A^*$。反之，若 $A$ 可逆，设 $AB=E$，两边取行列式得
+$|A||B|=1$，故 $|A|\neq 0$。
+\end{proof}
+
+$|A|\neq 0$ 的方阵称为\textbf{非奇异矩阵}，$|A|=0$ 的方阵称为\textbf{奇异矩阵}。
+上述定理表明：可逆 $\iff$ 非奇异。
+
+\begin{insight}[可逆的几何意义：变换能够“原路退回”]
+可逆矩阵是一个\textbf{不丢失信息}的变换：不同的输入被送到不同的输出，因而
+存在逆变换把一切还原。行列式恰好是判据：$|A|\neq0$（面积因子非零）时空间
+没有被压扁，变换是一一对应；$|A|=0$ 时整个空间被压缩到更低维，无数不同的
+输入共享同一个输出，还原不再可能。
+\end{insight}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[>=Stealth, scale=0.9]
+  \begin{scope}
+    \draw[gray!50] (-0.5,-0.5) grid[step=0.5] (2.5,2.5);
+    \draw[->] (-0.6,0) -- (2.8,0);
+    \draw[->] (0,-0.6) -- (0,2.8);
+    \fill[blue!60!black] (0.5,1.5) circle (2.2pt);
+    \fill[blue!60!black] (1.5,1.0) circle (2.2pt);
+    \fill[blue!60!black] (2.0,0.5) circle (2.2pt);
+    \node[below] at (1,-1.05) {三个不同的输入向量};
+  \end{scope}
+  \draw[->, very thick, gray] (3.6,1) -- (5.4,1)
+        node[midway, above] {$A=\operatorname{diag}(1,0)$};
+  \begin{scope}[xshift=6.6cm]
+    \draw[->] (-0.6,0) -- (3.2,0);
+    \draw[very thick, red!70] (-0.3,0) -- (3.0,0);
+    \fill[red!70!black] (0.5,0) circle (2.2pt);
+    \fill[red!70!black] (1.5,0) circle (2.2pt);
+    \fill[red!70!black] (2.0,0) circle (2.2pt);
+    \node[below] at (1.3,-0.85) {三个输出全部压在 $y_1$ 轴上};
+  \end{scope}
+\end{tikzpicture}
+\caption{降维压缩不可逆：$|A|=0$ 时，无数不同的输入被送到同一点，无法区分
+“谁是谁”，因此不存在逆变换。可逆 $\iff$ 变换不把空间压扁。}
+\label{fig:collapse}
+\end{figure}
+
+\begin{qa}{$|A|=0$、“方程组解不唯一”、“矩阵不可逆”、“秩亏”、“列向量线性相关”之间是什么关系？}
+答：对 $n$ 阶方阵，这些说法互相等价：$|A|=0$ $\iff$ $A$ 不可逆 $\iff$
+$\rank(A)<n$ $\iff$ 齐次方程组 $Ax=0$ 有非零解 $\iff$ $A$ 的列向量线性相关
+（第三章）$\iff$ 变换把 $n$ 维空间压扁。读者目前可以完全看懂前三个等价；
+后两个分别在第三章、第四章展开。把这张“等价网”记在心里，线性代数的各章
+就串成了一条线。
+\end{qa}
+
+\begin{corollary}\label{cor:one-sided}
+若 $AB=E$（或 $BA=E$），则 $B=A^{-1}$。
+\end{corollary}
+\begin{proof}
+$|A||B|=|E|=1$，故 $|A|\neq 0$，$A$ 可逆，于是
+$B=A^{-1}(AB)=A^{-1}E=A^{-1}$。
+\end{proof}
+
+\begin{example}\label{ex:inv-2}
+设 $A=\begin{pmatrix} a & b \\ c & d \end{pmatrix}$，$|A|=ad-bc\neq 0$，求
+$A^{-1}$。
+\end{example}
+\begin{proof}[解]
+四个代数余子式为 $A_{11}=d$，$A_{12}=-c$，$A_{21}=-b$，$A_{22}=a$，故
+\[
+  A^{-1}=\frac{1}{ad-bc}\begin{pmatrix} d & -b \\ -c & a \end{pmatrix}.
+\]
+\end{proof}
+
+\begin{example}\label{ex:inv-3}
+求 $A=\begin{pmatrix} 1 & 2 & 3 \\ 2 & 2 & 3 \\ 1 & 1 & 1 \end{pmatrix}$ 的
+逆矩阵。
+\end{example}
+\begin{proof}[解]
+先算各代数余子式：
+\[
+  \begin{aligned}
+    & A_{11}=-1,\quad && A_{12}=1,\quad && A_{13}=0, \\
+    & A_{21}=1,\quad  && A_{22}=-2,\quad && A_{23}=1, \\
+    & A_{31}=0,\quad  && A_{32}=3,\quad  && A_{33}=-2,
+  \end{aligned}
+\]
+按第一行展开得 $|A|=1\times(-1)+2\times 1+3\times 0=1\neq 0$，故
+\[
+  A^*=\begin{pmatrix} -1 & 1 & 0 \\ 1 & -2 & 3 \\ 0 & 1 & -2 \end{pmatrix},
+  \qquad
+  A^{-1}=A^*=\begin{pmatrix} -1 & 1 & 0 \\ 1 & -2 & 3 \\ 0 & 1 & -2 \end{pmatrix}.
+\]
+可直接验证 $AA^{-1}=E$。
+\end{proof}
+
+\begin{example}\label{ex:mat-eq}
+设 $A=\begin{pmatrix} 1 & 2 \\ 1 & 3 \end{pmatrix}$，
+$B=\begin{pmatrix} 1 & 1 \\ 2 & 3 \end{pmatrix}$，解矩阵方程 $AX=B$。
+\end{example}
+\begin{proof}[解]
+$|A|=1\neq 0$，故 $X=A^{-1}B$。由例~\ref{ex:inv-2}，
+$A^{-1}=\begin{pmatrix} 3 & -2 \\ -1 & 1 \end{pmatrix}$，于是
+\[
+  X=\begin{pmatrix} 3 & -2 \\ -1 & 1 \end{pmatrix}
+    \begin{pmatrix} 1 & 1 \\ 2 & 3 \end{pmatrix}
+   =\begin{pmatrix} -1 & -3 \\ 1 & 2 \end{pmatrix}.
+\]
+\end{proof}
+
+\section{分块矩阵}\label{sec:block}
+
+对于行数、列数较高的矩阵，常用若干条贯穿始终的横线与纵线把它分成许多小块，
+每一块是一个低阶矩阵，把每一小块当作一个元素处理，称为\textbf{矩阵的分块}。
+分块矩阵的加法、数乘按块进行；分块矩阵相乘时，把小块当作元素按规则
+\eqref{eq:matrix-multiply} 计算，但要求左矩阵的列分法与右矩阵的行分法一致。
+
+\begin{example}
+设
+\[
+  A=\begin{pmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 0 \end{pmatrix}
+\]
+按 $\begin{pmatrix} E_2 & O \\ O & 0 \end{pmatrix}$ 分块，说明把 $A$ 左乘到
+$3\times n$ 矩阵 $B$ 上的效果。
+\end{example}
+\begin{proof}[解]
+把 $B$ 按行分块为 $B=\begin{pmatrix} B_1 \\ B_2 \\ B_3 \end{pmatrix}$，则
+\[
+  AB=\begin{pmatrix} E_2 & O \\ O & 0 \end{pmatrix}
+      \begin{pmatrix} B_1 \\ B_2 \\ B_3 \end{pmatrix}
+    =\begin{pmatrix} B_1 \\ B_2 \\ O \end{pmatrix},
+\]
+即 $A$ 把 $B$ 的第三行“清零”，前两行保持不变。
+\end{proof}
+
+分块对角矩阵（准对角矩阵）
+$\operatorname{diag}(A_1,\cdots,A_s)$（其中 $A_i$ 都是方阵）的运算特别简单：
+\[
+  \operatorname{diag}(A_1,\cdots,A_s)\cdot\operatorname{diag}(B_1,\cdots,B_s)
+  =\operatorname{diag}(A_1B_1,\cdots,A_sB_s),
+\]
+当每个 $A_i$ 都可逆时，
+\[
+  \operatorname{diag}(A_1,\cdots,A_s)^{-1}
+  =\operatorname{diag}(A_1^{-1},\cdots,A_s^{-1}).
+\]
+
+\begin{example}
+利用分块求
+$A=\begin{pmatrix} 1 & 2 & 0 & 0 \\ 2 & 5 & 0 & 0 \\ 0 & 0 & 2 & 1 \\ 0 & 0 & 1 & 1 \end{pmatrix}$
+的逆矩阵。
+\end{example}
+\begin{proof}[解]
+$A=\operatorname{diag}(A_1,A_2)$，其中
+$A_1=\begin{pmatrix} 1 & 2 \\ 2 & 5 \end{pmatrix}$，
+$A_2=\begin{pmatrix} 2 & 1 \\ 1 & 1 \end{pmatrix}$，$|A_1|=|A_2|=1$。由例
+~\ref{ex:inv-2}，
+\[
+  A_1^{-1}=\begin{pmatrix} 5 & -2 \\ -2 & 1 \end{pmatrix},
+  \qquad
+  A_2^{-1}=\begin{pmatrix} 1 & -1 \\ -1 & 2 \end{pmatrix},
+\]
+故
+\[
+  A^{-1}=\begin{pmatrix}
+    5 & -2 & 0 & 0 \\ -2 & 1 & 0 & 0 \\ 0 & 0 & 1 & -1 \\ 0 & 0 & -1 & 2
+  \end{pmatrix}.
+\]
+\end{proof}
+
+分块矩阵转置时，除块本身要转置外，块的位置也要转置：若
+$A=\begin{pmatrix} A_{11} & A_{12} \\ A_{21} & A_{22} \end{pmatrix}$，则
+$A\trans=\begin{pmatrix} A_{11}\trans & A_{21}\trans \\ A_{12}\trans & A_{22}\trans \end{pmatrix}$。
+
+\section{矩阵的初等变换与初等矩阵}\label{sec:elementary}
+
+\begin{definition}\label{def:elementary-op}
+下列三种变换称为矩阵的\textbf{初等行变换}：
+\begin{enumerate}[label=(\arabic*), itemsep=0pt]
+  \item 对换两行（对换 $i,j$ 两行，记作 $r_i\leftrightarrow r_j$）；
+  \item 以非零数 $k$ 乘某一行（记作 $r_i\times k$）；
+  \item 把某一行乘以数 $k$ 后加到另一行上（记作 $r_i+kr_j$）。
+\end{enumerate}
+把上述定义中的“行”换成“列”，即得初等列变换（记号相应地把 $r$ 换成 $c$）。
+初等行变换与初等列变换统称\textbf{初等变换}。
+\end{definition}
+
+若矩阵 $A$ 经有限次初等变换变为 $B$，则称 $A$ 与 $B$ \textbf{等价}，记作
+$A\sim B$。矩阵间的等价关系满足反身性、对称性与传递性。
+
+\begin{definition}\label{def:echelon}
+称满足下列条件的矩阵为\textbf{行阶梯形矩阵}：
+（i）零行（元素全为零的行）位于非零行的下方；
+（ii）各非零行的第一个非零元（称为主元）的列标随着行标的增大而严格增大。
+若行阶梯形矩阵的主元都是 $1$，且主元所在列的其余元素都是 $0$，则称为
+\textbf{行最简形矩阵}。
+\end{definition}
+
+\begin{theorem}\label{thm:echelon}
+任何矩阵都可经有限次初等行变换化为行阶梯形，进而化为行最简形。
+\end{theorem}
+\begin{proof}
+设 $A$ 的第 1 列有非零元。若 $a_{11}=0$ 而 $a_{i1}\neq 0$，先作
+$r_1\leftrightarrow r_i$，使 $a_{11}\neq 0$；再对 $i=2,\cdots,m$ 作
+$r_i-\frac{a_{i1}}{a_{11}}r_1$，把第一列主元下方化为 $0$。对右下角的
+$(m-1)\times(n-1)$ 子块重复上述步骤，直到剩下的子块全是零行或没有剩余列。
+由于每一步非零行数或已处理列数至少增加一个，过程有限步终止，得行阶梯形。
+再用 $\frac{1}{a}\times r$ 把各主元化为 $1$，并自下而上用
+$r_i-a_{ij}r_j$ 把主元上方化为 $0$，即得行最简形。
+\end{proof}
+
+\begin{definition}\label{def:elementary-matrix}
+由单位矩阵 $E$ 经一次初等变换得到的矩阵称为\textbf{初等矩阵}，共三类：
+$E(i,j)$（对换 $i,j$ 两行）、$E(i(k))$（第 $i$ 行乘 $k\neq 0$）、
+$E(ij(k))$（第 $j$ 行乘 $k$ 加到第 $i$ 行上）。
+\end{definition}
+
+\begin{theorem}\label{thm:elem-mult}
+设 $A$ 为 $m\times n$ 矩阵。对 $A$ 施行一次初等\textbf{行}变换，相当于在
+$A$ 的\textbf{左边}乘以相应的 $m$ 阶初等矩阵；对 $A$ 施行一次初等\textbf{列}
+变换，相当于在 $A$ 的\textbf{右边}乘以相应的 $n$ 阶初等矩阵。
+\end{theorem}
+
+以 $E(12)$ 左乘 $\begin{pmatrix} a_{11} & a_{12} \\ a_{21} & a_{22} \end{pmatrix}$
+得 $\begin{pmatrix} a_{21} & a_{22} \\ a_{11} & a_{12} \end{pmatrix}$，恰好是
+对换一、二两行的结果，其余情形类似（验证留给读者）。
+
+初等矩阵都是可逆的，且其逆矩阵仍是同一类型的初等矩阵：
+\[
+  E(i,j)^{-1}=E(i,j),\qquad
+  E(i(k))^{-1}=E\big(i(\tfrac{1}{k})\big),\qquad
+  E(ij(k))^{-1}=E(ij(-k)).
+\]
+
+\begin{theorem}\label{thm:elem-product}
+设 $A$ 为可逆方阵，则 $A$ 可以表示为有限个初等矩阵的乘积。
+\end{theorem}
+\begin{proof}
+$A$ 可逆故 $|A|\neq 0$。由定理~\ref{thm:echelon}，$A$ 可经有限次初等行变换
+化为行最简形 $R$，且每一步对应左乘一个初等矩阵，即存在初等矩阵
+$P_1,\cdots,P_t$ 使 $P_t\cdots P_1A=R$。$|R|=|P_t\cdots P_1|\,|A|\neq 0$，
+故 $R$ 没有零行，行最简形且满秩的方阵只能是 $E$，于是
+$P_t\cdots P_1A=E$，即
+\[
+  A=P_1^{-1}\cdots P_t^{-1}E=P_1^{-1}\cdots P_t^{-1},
+\]
+是有限个初等矩阵之积。
+\end{proof}
+
+由此得到用初等变换求逆矩阵的方法。设 $A$ 可逆，由上述定理存在初等矩阵
+$P$（若干个初等矩阵之积）使 $PA=E$，即 $P=A^{-1}$。对分块矩阵
+$(A\mid E)$ 施行同样的初等行变换：
+\[
+  P(A\mid E)=(PA\mid PE)=(E\mid P)=(E\mid A^{-1}),
+\]
+即：\textbf{对 $(A\mid E)$ 施行初等行变换，当左半部分化为 $E$ 时，右半部分
+就是 $A^{-1}$}；若左半部分出现零行，则 $A$ 不可逆。
+
+\begin{example}\label{ex:inv-elementary}
+用初等行变换求
+$A=\begin{pmatrix} 2 & 1 & 1 \\ 1 & 2 & 1 \\ 1 & 1 & 2 \end{pmatrix}$ 的逆。
+\end{example}
+\begin{proof}[解]
+\begin{align*}
+  (A\mid E)
+  &=\begin{pmatrix} 2 & 1 & 1 &\vline& 1 & 0 & 0 \\
+                    1 & 2 & 1 &\vline& 0 & 1 & 0 \\
+                    1 & 1 & 2 &\vline& 0 & 0 & 1 \end{pmatrix}
+   \xrightarrow[\ r_3-2r_1\ ]{r_1\leftrightarrow r_3,\ r_2-r_1}
+    \begin{pmatrix} 1 & 1 & 2 &\vline& 0 & 0 & 1 \\
+                    0 & 1 & -1 &\vline& 0 & 1 & -1 \\
+                    0 & -1 & -3 &\vline& 1 & 0 & -2 \end{pmatrix} \\
+  &\xrightarrow{\ r_3+r_2\ }
+    \begin{pmatrix} 1 & 1 & 2 &\vline& 0 & 0 & 1 \\
+                    0 & 1 & -1 &\vline& 0 & 1 & -1 \\
+                    0 & 0 & -4 &\vline& 1 & 1 & -3 \end{pmatrix}
+   \xrightarrow{\ r_3\times(-\tfrac14)\ }
+    \begin{pmatrix} 1 & 1 & 2 &\vline& 0 & 0 & 1 \\
+                    0 & 1 & -1 &\vline& 0 & 1 & -1 \\
+                    0 & 0 & 1 &\vline& -\tfrac14 & -\tfrac14 & \tfrac34 \end{pmatrix} \\
+  &\xrightarrow[\ r_1-2r_3\ ]{r_2+r_3}
+    \begin{pmatrix} 1 & 1 & 0 &\vline& \tfrac12 & \tfrac12 & -\tfrac12 \\
+                    0 & 1 & 0 &\vline& -\tfrac14 & \tfrac34 & -\tfrac14 \\
+                    0 & 0 & 1 &\vline& -\tfrac14 & -\tfrac14 & \tfrac34 \end{pmatrix}
+   \xrightarrow{\ r_1-r_2\ }
+    \begin{pmatrix} 1 & 0 & 0 &\vline& \tfrac34 & -\tfrac14 & -\tfrac14 \\
+                    0 & 1 & 0 &\vline& -\tfrac14 & \tfrac34 & -\tfrac14 \\
+                    0 & 0 & 1 &\vline& -\tfrac14 & -\tfrac14 & \tfrac34 \end{pmatrix},
+\end{align*}
+故
+\[
+  A^{-1}=\frac14\begin{pmatrix} 3 & -1 & -1 \\ -1 & 3 & -1 \\ -1 & -1 & 3 \end{pmatrix}.
+\]
+\end{proof}
+
+\section{矩阵的秩}\label{sec:rank}
+
+\begin{definition}\label{def:rank}
+在 $m\times n$ 矩阵 $A$ 中任取 $k$ 行 $k$ 列（$k\le\min(m,n)$），位于这些行、
+列交叉处的 $k^2$ 个元素按原次序组成的 $k$ 阶行列式称为 $A$ 的一个 $k$ 阶
+\textbf{子式}。若 $A$ 中存在一个 $r$ 阶子式不为零，而所有 $r+1$ 阶子式（若存在）
+全为零，则称 $A$ 的\textbf{秩}为 $r$，记作 $\rank(A)=r$。零矩阵的秩规定为
+$0$。
+\end{definition}
+
+按定义，一个矩阵的秩就是其最高阶非零子式的阶数。由行列式性质
+（性质~\ref{prop:det-transpose}：转置不变），$A$ 的子式与 $A\trans$ 的子式
+互为转置，故
+\[
+  \rank(A\trans)=\rank(A).
+\]
+$n$ 阶方阵 $A$ 满秩（即 $\rank(A)=n$）当且仅当 $|A|\neq 0$，即 $A$ 可逆。
+
+用子式直接求秩需要计算大量行列式，实际计算利用下面的定理。
+
+\begin{theorem}\label{thm:rank-invariant}
+初等变换不改变矩阵的秩。
+\end{theorem}
+\begin{proof}
+由定理~\ref{thm:elem-mult}，只需证初等变换前后“存在非零 $s$ 阶子式”这一性质
+不变。前两类变换（对换、数乘）显然保持。对第三类变换 $r_i+kr_j$，任取变换后
+矩阵的一个 $s$ 阶子式 $D'$：若其行不涉及第 $i$ 行，则 $D'$ 是原矩阵的同位
+子式；若涉及第 $i$ 行，由行列式性质~\ref{prop:det-split} 与
+\ref{prop:det-equal-rows}，$D'$ 或者等于原矩阵的一个 $s$ 阶子式（当所选行
+同时含第 $i,j$ 行时，拆出的第二项有两行相同而为零），或者等于原矩阵某个
+$s$ 阶子式与 $k$ 乘另一个 $s$ 阶子式之和。总之，变换后的非零 $s$ 阶子式都
+由原矩阵的非零 $s$ 阶子式产生；又因该变换可逆（用 $r_i-kr_j$ 还原），反向
+亦然。故最高阶非零子式的阶数不变。
+\end{proof}
+
+\begin{theorem}\label{thm:rank-echelon}
+行阶梯形矩阵的秩等于其非零行的个数。
+\end{theorem}
+\begin{proof}
+设行阶梯形矩阵有 $r$ 个非零行，第 $i$ 行主元位于第 $j_i$ 列，则
+$j_1<j_2<\cdots<j_r$。取这 $r$ 行与第 $j_1,\cdots,j_r$ 列，所得 $r$ 阶子式为
+上三角行列式，主对角线元素为各主元，故不为零（例~\ref{ex:upper-tri}）。
+而任何 $r+1$ 阶子式必含一个零行，故为零。因此秩为 $r$。
+\end{proof}
+
+于是求秩的方法是：用初等行变换把矩阵化为行阶梯形，非零行数即秩。
+
+\begin{example}
+求 $A=\begin{pmatrix} 1 & 2 & 3 & 4 \\ 2 & 4 & 6 & 9 \\ 1 & 1 & 1 & 1 \end{pmatrix}$
+的秩。
+\end{example}
+\begin{proof}[解]
+\[
+  A\xrightarrow[\ r_3-r_1\ ]{r_2-2r_1}
+  \begin{pmatrix} 1 & 2 & 3 & 4 \\ 0 & 0 & 0 & 1 \\ 0 & -1 & -2 & -3 \end{pmatrix}
+  \xrightarrow{\ r_2\leftrightarrow r_3\ }
+  \begin{pmatrix} 1 & 2 & 3 & 4 \\ 0 & -1 & -2 & -3 \\ 0 & 0 & 0 & 1 \end{pmatrix},
+\]
+行阶梯形有 $3$ 个非零行，故 $\rank(A)=3$。
+\end{proof}
+
+\begin{theorem}\label{thm:rank-product}
+\begin{enumerate}[label=(\arabic*), itemsep=0pt]
+  \item 若 $P$、$Q$ 可逆，则 $\rank(PAQ)=\rank(A)$；
+  \item $\rank(AB)\le\min\{\rank(A),\rank(B)\}$；
+  \item $\rank(A+B)\le\rank(A)+\rank(B)$（证明见第三章习题）。
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+（1）由定理~\ref{thm:elem-product}，$P$、$Q$ 都是初等矩阵之积，而初等变换
+不改变秩（定理~\ref{thm:rank-invariant}），故 $\rank(PAQ)=\rank(A)$。
+
+（2）任何 $m\times n$ 矩阵 $B$ 都可经初等变换化为等价标准形
+$B\sim\begin{pmatrix} E_r & O \\ O & O \end{pmatrix}$（对定理~\ref{thm:echelon}
+得到的行最简形再作列变换：把主元列换到前 $r$ 列），其中 $r=\rank(B)$。即存在
+可逆矩阵 $P,Q$ 使 $B=P\begin{pmatrix} E_r & O \\ O & O \end{pmatrix}Q$。于是
+\[
+  AB=(AP)\begin{pmatrix} E_r & O \\ O & O \end{pmatrix}Q,
+\]
+由（1），$\rank(AB)$ 等于 $AP\begin{pmatrix} E_r & O \\ O & O \end{pmatrix}$
+的秩，而后者最后 $n-r$ 列全为零，其非零子式只能落在前 $r$ 列中，故秩 $\le r$。
+于是 $\rank(AB)\le\rank(B)$。又
+$\rank(AB)=\rank\big((AB)\trans\big)=\rank(B\trans A\trans)\le\rank(A\trans)=\rank(A)$。
+\end{proof}
+
+\begin{insight}[秩的几何意义：变换后还剩几维]
+$r(A)$ 恰好是变换 $A$ 的\textbf{像空间的维数}——全体输出向量 $Ax$ 张成的空间
+的维数（也就是列向量组的秩，见第三章定理~\ref{thm:col-rank}）。可逆时
+$r(A)=n$：整个空间都被保留；$r(A)<n$ 时空间被压到一个 $r$ 维的“薄层”上。
+例如 $\operatorname{diag}(1,0,0)$ 把三维空间压成一条直线，秩为 $1$。由此，
+“初等变换不改变秩”（定理~\ref{thm:rank-invariant}）的几何内容就是：左乘
+可逆矩阵只是一些扭转、拉伸与剪切的复合，不会降低空间的维数。
+\end{insight}
+
+\begin{qa}{求秩时为什么教材都强调“只用行变换”？用列变换或行列混用行吗？}
+答：行变换保持\textbf{列向量之间的线性关系}（第三章引理~\ref{lem:col-relations}：
+$Ak=0\iff(PA)k=0$），因此化为阶梯形后，既能数出秩，又能顺便读出列之间的
+表示关系——这是第三章求极大无关组的标准做法。列变换会打乱这种关系（相当于
+给未知量换名），但若\textbf{只求秩}，行、列变换都可以用（定理
+~\ref{thm:rank-invariant} 对列同样成立）。习惯上只用行变换，是为了“一次
+消元，同时得到秩与向量组的关系”。
+\end{qa}
+
+\chapterexercises{二}
+
+\begin{enumerate}[label=\arabic*., itemsep=2pt]
+\item 设
+  $A=\begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix}$，
+  $B=\begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}$，求 $AB$、$BA$、$A^2-3A+2E$。
+\item 计算下列乘积：
+  $(1\ 2\ 3)\begin{pmatrix} 4 \\ 5 \\ 6 \end{pmatrix}$ 与
+  $\begin{pmatrix} 4 \\ 5 \\ 6 \end{pmatrix}(1\ 2\ 3)$。
+\item 求下列矩阵的逆：
+  \[
+  \text{(1)}\ \begin{pmatrix} 3 & 1 \\ 5 & 2 \end{pmatrix};
+  \qquad
+  \text{(2)}\ \begin{pmatrix} 1 & 2 & 3 \\ 2 & 2 & 3 \\ 1 & 1 & 1 \end{pmatrix}.
+  \]
+\item 设 $A=\begin{pmatrix} 1 & -1 \\ 2 & 3 \end{pmatrix}$，求
+  $A^2-2A+5E$，并利用 $A^2-2A+5E=O$ 证明 $A$ 可逆并求 $A^{-1}$。
+\item 解矩阵方程
+  $\begin{pmatrix} 2 & 1 \\ 1 & 1 \end{pmatrix}X
+   =\begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix}$。
+\item 设 $A$、$B$ 都是 $n$ 阶对称矩阵，证明 $AB$ 是对称矩阵的充分必要条件是
+  $AB=BA$。
+\item 证明：任一 $n$ 阶方阵都可以表示为一个对称矩阵与一个反对称矩阵之和。
+\item 利用分块求
+  $\begin{pmatrix} 5 & 6 & 0 & 0 \\ 6 & 7 & 0 & 0 \\ 0 & 0 & 1 & 2 \\ 0 & 0 & 3 & 5 \end{pmatrix}$
+  的逆矩阵。
+\item 用初等行变换求
+  $\begin{pmatrix} 1 & 2 & 3 \\ 2 & 2 & 3 \\ 1 & 1 & 1 \end{pmatrix}$ 的逆
+  （与例~\ref{ex:inv-3} 的结果一致）。
+\item 求下列矩阵的秩：
+  \[
+  \text{(1)}\ \begin{pmatrix} 1 & 2 & 3 \\ 2 & 4 & 6 \\ 1 & 1 & 1 \end{pmatrix};
+  \qquad
+  \text{(2)}\ \begin{pmatrix} 1 & 2 & 3 & 4 \\ 2 & 4 & 6 & 9 \\ 3 & 6 & 9 & 13 \end{pmatrix}.
+  \]
+\item 设 $A$ 为 $n$ 阶可逆矩阵，证明 $|A^*|=|A|^{n-1}$。
+\item 举例说明：存在矩阵 $A\neq O$、$B\neq O$ 使 $AB=O$；并由此说明消去律
+  一般不成立。
+\end{enumerate}

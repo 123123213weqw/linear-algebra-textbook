@@ -1,0 +1,308 @@
+\chapter{向量组的线性相关性}
+
+有了矩阵作为工具，本章研究 $n$ 维向量以及线性相关性理论。核心概念是线性组合、
+线性相关与线性无关、极大无关组与向量组的秩；章末介绍向量空间的初步知识。
+
+\section{$n$ 维向量}
+
+\begin{definition}\label{def:n-vector}
+$n$ 个有序的实数
+\[
+  \alpha=(a_1,a_2,\cdots,a_n)
+\]
+称为一个\textbf{$n$ 维向量}，其中 $a_i$ 称为向量 $\alpha$ 的第 $i$ 个
+\textbf{分量}。向量也可写成列的形式；$n$ 维列向量就是 $n\times1$ 矩阵，
+$n$ 维行向量就是 $1\times n$ 矩阵。全体 $n$ 维实向量构成的集合记作 $\R^n$。
+\end{definition}
+
+设 $\alpha=(a_1,\cdots,a_n)$，$\beta=(b_1,\cdots,b_n)$，$k$ 为数，定义
+\[
+  \alpha+\beta=(a_1+b_1,\cdots,a_n+b_n),\qquad
+  k\alpha=(ka_1,\cdots,ka_n),\qquad
+  -\alpha=(-1)\alpha .
+\]
+上述运算满足通常的八条运算律（加法交换律、结合律，零向量 $0=(0,\cdots,0)$
+的存在性，负向量的存在性，以及数乘的四条分配律）。两个向量当且仅当对应分量
+都相等时相等。
+
+在几何上，$\R^2$ 与 $\R^3$ 中的向量就是平面与空间中的有向线段（或点），分量
+就是坐标。$n>3$ 时虽无直观图像，代数运算完全相同。
+
+\section{线性组合}
+
+\begin{definition}\label{def:combination}
+设 $\alpha_1,\cdots,\alpha_m$ 是一组向量。形如
+\[
+  k_1\alpha_1+k_2\alpha_2+\cdots+k_m\alpha_m
+\]
+的向量称为向量组 $\alpha_1,\cdots,\alpha_m$ 的一个\textbf{线性组合}（$k_i$
+称为\textbf{系数}），也称该向量可由 $\alpha_1,\cdots,\alpha_m$ \textbf{线性
+表示}。$\alpha_1,\cdots,\alpha_m$ 的全体线性组合构成的集合记作
+$\operatorname{span}(\alpha_1,\cdots,\alpha_m)$。
+\end{definition}
+
+例如，任一向量 $\alpha=(a_1,a_2,a_3)$ 都是标准单位向量
+$\varepsilon_1=(1,0,0)$、$\varepsilon_2=(0,1,0)$、$\varepsilon_3=(0,0,1)$
+的线性组合：$\alpha=a_1\varepsilon_1+a_2\varepsilon_2+a_3\varepsilon_3$。
+
+一个向量能否由某向量组线性表示，本质上是一个线性方程组是否有解的问题：把各
+向量写成列向量，$\beta=\sum k_i\alpha_i$ 即 $Ak=\beta$，其中
+$A=(\alpha_1,\cdots,\alpha_m)$。其结论由秩刻画。
+
+\begin{theorem}\label{thm:represent-rank}
+$\beta$ 可由 $\alpha_1,\cdots,\alpha_m$ 线性表示的充分必要条件是
+\[
+  \rank(\alpha_1,\cdots,\alpha_m,\beta)=\rank(\alpha_1,\cdots,\alpha_m);
+\]
+且表示式唯一的充分必要条件是 $\alpha_1,\cdots,\alpha_m$ 线性无关
+（见 \S\ref{sec:dependence}）。
+\end{theorem}
+
+该定理在 \S\ref{sec:vec-rank} 建立向量组的秩的理论后再证明。
+
+\begin{example}
+$\beta=(1,2,3)$ 能否由 $\alpha_1=(1,1,0)$、$\alpha_2=(0,1,1)$ 线性表示？
+\end{example}
+\begin{proof}[解]
+设 $k_1\alpha_1+k_2\alpha_2=\beta$，比较分量得
+\[
+  k_1=1,\qquad k_1+k_2=2,\qquad k_2=3,
+\]
+此方程组无解（前两式给出 $k_2=1$，第三式给出 $k_2=3$，矛盾）。故 $\beta$
+不能由 $\alpha_1,\alpha_2$ 线性表示。
+\end{proof}
+
+\section{线性相关与线性无关}\label{sec:dependence}
+
+\begin{definition}\label{def:dependence}
+若存在一组\textbf{不全为零}的数 $k_1,\cdots,k_m$，使
+\[
+  k_1\alpha_1+k_2\alpha_2+\cdots+k_m\alpha_m=0 ,
+\]
+则称向量组 $\alpha_1,\cdots,\alpha_m$ \textbf{线性相关}；否则称它
+\textbf{线性无关}：上式成立当且仅当 $k_1=\cdots=k_m=0$。
+\end{definition}
+
+等价地说：把 $\alpha_1,\cdots,\alpha_m$ 作为列排成矩阵 $A$，向量组线性相关
+当且仅当齐次线性方程组 $Ak=0$ 有非零解。
+
+几何上：两个向量线性相关当且仅当其中一个是另一个的倍数（共线）；$\R^3$ 中
+三个向量线性相关当且仅当它们共面（在同一张过原点的平面上）。
+
+\begin{theorem}\label{thm:dependent-one-of}
+向量组 $\alpha_1,\cdots,\alpha_m$ 线性相关的充分必要条件是其中至少有一个
+向量可由其余向量线性表示。
+\end{theorem}
+\begin{proof}
+若 $\sum k_i\alpha_i=0$ 且某个 $k_j\neq0$，则可解出
+$\alpha_j=-\frac{1}{k_j}\sum_{i\neq j}k_i\alpha_i$。反之，若
+$\alpha_j=\sum_{i\neq j}l_i\alpha_i$，则
+$\alpha_j-\sum_{i\neq j}l_i\alpha_i=0$ 就是一个非平凡的表示式。
+\end{proof}
+
+\begin{theorem}\label{thm:unique-representation}
+若向量组 $\alpha_1,\cdots,\alpha_m$ 线性无关，而 $\alpha_1,\cdots,\alpha_m,\beta$
+线性相关，则 $\beta$ 可由 $\alpha_1,\cdots,\alpha_m$ 线性表示，且表示式唯一。
+\end{theorem}
+\begin{proof}
+由相关性，存在不全为零的数使 $k_1\alpha_1+\cdots+k_m\alpha_m+k\beta=0$。若
+$k=0$，则 $\sum k_i\alpha_i=0$ 是非平凡的关系，与无关性矛盾；故 $k\neq0$，
+于是 $\beta=-\frac{1}{k}\sum k_i\alpha_i$。唯一性：若又有
+$\beta=\sum l_i\alpha_i$，两式相减得 $\sum(k_i-l_i)\alpha_i=0$，由无关性
+$k_i=l_i$。
+\end{proof}
+
+\begin{theorem}\label{thm:subset}
+若向量组的一个部分组线性相关，则整个向量组线性相关；等价地，线性无关向量组
+的任何部分组都线性无关。
+\end{theorem}
+\begin{proof}
+把部分组上的非平凡关系在其余向量上取零系数扩充，即得整组的一个非平凡关系。
+\end{proof}
+
+\begin{theorem}\label{thm:more-than-n}
+$\R^n$ 中任意 $m>n$ 个向量必线性相关。
+\end{theorem}
+\begin{proof}
+设 $A=(\alpha_1,\cdots,\alpha_m)$，这是 $n\times m$ 矩阵。把 $A$ 用初等行
+变换化为行阶梯形，其主元个数不超过行数 $n$，故主元列至多 $n$ 个；而 $m>n$，
+必有某列不是主元列。在阶梯形方程组 $Ak=0$ 中回代求解：自由未知量取非零值，
+即得非零解 $k$（自最下面的主元行逐行回代，解出各主元未知量后，自由未知量
+可任取非零值）。
+\end{proof}
+
+\begin{example}
+判断 $\alpha_1=(1,1,0)$、$\alpha_2=(0,1,1)$、$\alpha_3=(1,0,-1)$ 是否线性
+相关。
+\end{example}
+\begin{proof}[解]
+解 $k_1\alpha_1+k_2\alpha_2+k_3\alpha_3=0$，按分量写出：
+\[
+  \begin{cases}
+    k_1\hphantom{+k_2}+k_3=0, \\
+    k_1+k_2\hphantom{+k_3}=0, \\
+    \hphantom{k_1+}k_2-k_3=0.
+  \end{cases}
+\]
+前两式给出 $k_2=k_3=-k_1$，代入第三式得 $-k_1+k_1=0$ 恒成立，故 $k_1$ 可
+任取。取 $k_1=1$ 得非平凡关系 $\alpha_1-\alpha_2-\alpha_3=0$，向量组线性
+相关。
+\end{proof}
+
+\begin{example}
+$n$ 个标准单位向量 $\varepsilon_1,\cdots,\varepsilon_n$ 线性无关：由
+$\sum k_i\varepsilon_i=(k_1,\cdots,k_n)=0$ 立得每个 $k_i=0$。
+\end{example}
+
+\section{向量组的秩}\label{sec:vec-rank}
+
+\begin{definition}\label{def:maximal-independent}
+设 $S$ 是一个向量组。若 $S$ 的一个部分组 $\alpha_{i_1},\cdots,\alpha_{i_r}$
+线性无关，且 $S$ 中任一向量都可由它线性表示，则称该部分组是 $S$ 的一个
+\textbf{极大线性无关组}（简称\textbf{极大无关组}），数 $r$ 称为向量组 $S$
+的\textbf{秩}。
+\end{definition}
+
+按定义，秩似乎依赖于所选的极大无关组；下面的结果表明它是唯一确定的。先给出
+一个联系列向量组关系与初等行变换的引理。
+
+\begin{lemma}\label{lem:col-relations}
+设 $P$ 可逆，则矩阵 $A$ 的列向量组与 $PA$ 的列向量组满足完全相同的线性关系，
+即 $Ak=0\iff(PA)k=0$。
+\end{lemma}
+\begin{proof}
+$Ak=0\Rightarrow(PA)k=P(Ak)=0$；反之 $(PA)k=0\Rightarrow
+Ak=P^{-1}\big((PA)k\big)=0$。
+\end{proof}
+
+\begin{theorem}\label{thm:col-rank}
+设 $A$ 经初等行变换化为有 $r$ 个主元的行最简形 $R$，则：
+（1）$A$ 的 $r$ 个主元列线性无关，$A$ 的其余列都可由主元列线性表示；
+（2）$A$ 的列向量组的秩（列秩）等于 $r=\rank(A)$；
+（3）$A$ 的行向量组的秩（行秩）等于列秩。
+\end{theorem}
+\begin{proof}
+在 $R$ 中，各主元列恰为单位向量 $e_1,\cdots,e_r$，它们线性无关；每个非主元
+列以自身各元素为系数可由这些单位向量线性表示。由引理~\ref{lem:col-relations}，
+$A$ 的列之间也满足相同的关系，故（1）成立，进而（2）由定理~\ref{thm:rank-echelon}
+（秩 $=r$）得证。（3）对 $A\trans$ 用（2）：$A\trans$ 的列秩等于
+$\rank(A\trans)=\rank(A)$，而 $A\trans$ 的列正是 $A$ 的行。
+\end{proof}
+
+由该定理，向量组的秩等于以这些向量为列排成矩阵的秩，并可由行阶梯形直接读出；
+\textbf{原矩阵的主元列}就构成向量组的一个极大无关组。
+
+\begin{theorem}\label{thm:represent-inequality}
+若线性无关向量组 $A$ 含 $r$ 个向量，且可由含 $s$ 个向量的向量组 $B$ 线性
+表示，则 $r\le s$。因此，同一向量组的任意两个极大无关组所含向量个数相同，
+秩是唯一确定的。
+\end{theorem}
+\begin{proof}
+把两组向量按列排成矩阵 $A=(\alpha_1,\cdots,\alpha_r)$、
+$B=(\beta_1,\cdots,\beta_s)$。“$A$ 组可由 $B$ 组表示”即存在 $s\times r$
+矩阵 $K$ 使 $A=BK$。由定理~\ref{thm:rank-product}，
+$\rank(A)\le\rank(B)\le s$；又 $A$ 的列线性无关，由定理~\ref{thm:col-rank}，
+$\rank(A)=r$。故 $r\le s$。若两个极大无关组分别含 $r$、$s$ 个向量，则它们
+互相可表示（都表示整个向量组），于是 $r\le s$ 且 $s\le r$，即 $r=s$。
+\end{proof}
+
+\begin{proof}[定理~\ref{thm:represent-rank} 的证明]
+$\beta$ 可由 $\alpha_1,\cdots,\alpha_m$ 表示，等价于在 $(\alpha_1,\cdots,
+\alpha_m)$ 后添列 $\beta$ 秩不增大，即两组秩相等（添列只可能使秩不减）。
+唯一性即定理~\ref{thm:unique-representation}。
+\end{proof}
+
+\begin{example}
+求向量组 $\alpha_1=(1,0,2)$、$\alpha_2=(0,1,1)$、$\alpha_3=(1,1,3)$、
+$\alpha_4=(2,1,5)$ 的一个极大无关组与秩，并把其余向量用该极大无关组线性
+表示。
+\end{example}
+\begin{proof}[解]
+把各向量按列排成矩阵并作初等行变换：
+\[
+  (\alpha_1,\alpha_2,\alpha_3,\alpha_4)=
+  \begin{pmatrix} 1 & 0 & 1 & 2 \\ 0 & 1 & 1 & 1 \\ 2 & 1 & 3 & 5 \end{pmatrix}
+  \xrightarrow{\ r_3-2r_1\ }
+  \begin{pmatrix} 1 & 0 & 1 & 2 \\ 0 & 1 & 1 & 1 \\ 0 & 1 & 1 & 1 \end{pmatrix}
+  \xrightarrow{\ r_3-r_2\ }
+  \begin{pmatrix} 1 & 0 & 1 & 2 \\ 0 & 1 & 1 & 1 \\ 0 & 0 & 0 & 0 \end{pmatrix}.
+\]
+主元在第 1、2 列：$\alpha_1,\alpha_2$ 是一个极大无关组，向量组的秩为 $2$；
+由非主元列读出
+\[
+  \alpha_3=\alpha_1+\alpha_2,\qquad \alpha_4=2\alpha_1+\alpha_2 .
+\]
+\end{proof}
+
+\section{向量空间、基与坐标}
+
+\begin{definition}\label{def:vector-space}
+设 $V$ 是若干个同维向量构成的非空集合。若 $V$ 对向量的加法与数乘封闭
+（$\alpha,\beta\in V$ 时 $\alpha+\beta\in V$ 且 $k\alpha\in V$），则称 $V$
+是一个\textbf{向量空间}（$\R^n$ 的线性子空间）。任何这样的 $V$ 都含有零向量。
+\end{definition}
+
+例如：$\R^n$ 本身；$\R^3$ 中过原点的直线或平面；齐次线性方程组的解集
+（见第四章）；以及 $\operatorname{span}(\alpha_1,\cdots,\alpha_m)$——它是
+包含 $\alpha_1,\cdots,\alpha_m$ 的最小向量空间。
+
+\begin{definition}\label{def:basis}
+若向量空间 $V$ 中的向量组 $\beta_1,\cdots,\beta_n$ 线性无关，且 $V$ 中任一
+向量都可由它们线性表示，则称 $\beta_1,\cdots,\beta_n$ 是 $V$ 的一组\textbf{基}。
+此时每个 $\alpha\in V$ 的表示式 $\alpha=x_1\beta_1+\cdots+x_n\beta_n$ 唯一
+（定理~\ref{thm:unique-representation}），系数 $(x_1,\cdots,x_n)$ 称为
+$\alpha$ 在该基下的\textbf{坐标}，$n$ 称为 $V$ 的\textbf{维数}（由定理
+~\ref{thm:represent-inequality}，任何两组基所含向量个数相同）。
+\end{definition}
+
+$\R^n$ 的标准基是 $\varepsilon_1,\cdots,\varepsilon_n$。一个常用判别法：
+$\R^n$ 中 $n$ 个向量构成基的充分必要条件是以它们为列的矩阵的行列式非零
+（由定理~\ref{thm:more-than-n} 与第一章：$n$ 个 $n$ 维向量线性无关当且仅当
+行列式非零）。
+
+\begin{example}
+求 $\beta=(1,2,1)$ 在基 $\alpha_1=(1,1,0)$、$\alpha_2=(0,1,1)$、
+$\alpha_3=(1,0,1)$ 下的坐标。
+\end{example}
+\begin{proof}[解]
+解 $k_1\alpha_1+k_2\alpha_2+k_3\alpha_3=\beta$：
+\[
+  \begin{cases}
+    k_1\hphantom{+k_2}+k_3=1, \\
+    k_1+k_2\hphantom{+k_3}=2, \\
+    \hphantom{k_1+}k_2+k_3=1.
+  \end{cases}
+\]
+三式相加得 $2(k_1+k_2+k_3)=4$，即 $k_1+k_2+k_3=2$；用它分别减去三式得
+$k_2=1$、$k_3=1$、$k_1=1$。检验：$\alpha_1+\alpha_2=(1,2,1)=\beta$。故坐标
+为 $(1,1,0)$。
+\end{proof}
+
+设 $\alpha_1,\cdots,\alpha_n$ 与 $\beta_1,\cdots,\beta_n$ 是 $V$ 的两组基，
+且 $(\beta_1,\cdots,\beta_n)=(\alpha_1,\cdots,\alpha_n)C$（$C$ 的第 $j$ 列是
+$\beta_j$ 在 $\alpha$ 基下的坐标），则 $C$ 可逆，且坐标变换公式为
+$x_\alpha=C\,x_\beta$；$C$ 称为由 $\alpha$ 基到 $\beta$ 基的\textbf{过渡矩阵}。
+
+\chapterexercises{三}
+
+\begin{enumerate}[label=\arabic*., itemsep=2pt]
+\item 判断 $(1,1,1)$、$(1,2,3)$、$(1,3,6)$ 是否线性无关。
+\item $\beta=(1,2,1)$ 能否由 $\alpha_1=(1,1,0)$、$\alpha_2=(0,1,1)$ 线性
+  表示？若能，表示式是否唯一？
+\item 求向量组 $(1,2,3)$、$(2,4,6)$、$(0,1,2)$ 的一个极大无关组与秩。
+\item 求向量组 $(1,0,2)$、$(0,1,1)$、$(1,1,3)$、$(2,1,5)$ 的秩、一个极大
+  无关组，并用它表示其余向量。
+\item 证明定理~\ref{thm:subset}：线性无关向量组的任何部分组都线性无关。
+\item 证明：含零向量的向量组必线性相关。
+\item 证明：两个向量线性相关的充分必要条件是它们的对应分量成比例。
+\item 通过求解相应的齐次线性方程组，证明 $\R^n$ 中任何 $n+1$ 个向量必线性
+  相关（定理~\ref{thm:more-than-n} 取 $m=n+1$）。
+\item $\lambda$ 取何值时，$(1,1,0)$、$(0,1,1)$、$(\lambda,0,1)$ 线性相关？
+  对该 $\lambda$ 写出一个非平凡的线性关系式。
+\item 求 $(2,3,3)$ 在基 $(1,1,0)$、$(0,1,1)$、$(1,0,1)$ 下的坐标。
+\item 证明 $\operatorname{span}(\alpha_1,\cdots,\alpha_m)$ 是向量空间，且是
+  包含 $\alpha_1,\cdots,\alpha_m$ 的最小向量空间。
+\item 证明 $\rank(A+B)\le\rank(A)+\rank(B)$。（提示：先证
+  $\rank(A\ \ B)\le\rank(A)+\rank(B)$，其中 $(A\ \ B)$ 表示把 $B$ 的列接在
+  $A$ 的右边；再利用 $A+B=(A\ \ B)\begin{pmatrix} E \\ E \end{pmatrix}$。）
+\end{enumerate}

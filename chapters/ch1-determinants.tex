@@ -1,0 +1,547 @@
+\chapter{行列式}
+
+行列式是线性代数中最基本的概念之一，它起源于求解线性方程组的需要。本章从
+二元、三元线性方程组的求解公式引出二阶、三阶行列式，进而推广到 $n$ 阶行列式，
+讨论其性质与计算方法，最后介绍用行列式求解线性方程组的克拉默法则。
+
+\section{二阶与三阶行列式}
+
+考虑二元线性方程组
+\[
+  \begin{cases}
+    a_{11}x_1 + a_{12}x_2 = b_1, \\
+    a_{21}x_1 + a_{22}x_2 = b_2.
+  \end{cases}
+\]
+用消元法可得：当 $a_{11}a_{22}-a_{12}a_{21}\neq 0$ 时，
+\[
+  x_1=\frac{b_1a_{22}-a_{12}b_2}{a_{11}a_{22}-a_{12}a_{21}},
+  \qquad
+  x_2=\frac{a_{11}b_2-b_1a_{21}}{a_{11}a_{22}-a_{12}a_{21}} .
+\]
+两个分母恰好是同一个代数和。为了简明地表达这类结果，给出下述定义。
+
+\begin{definition}\label{def:order2}
+称代数和 $a_{11}a_{22}-a_{12}a_{21}$ 为二阶行列式，记作
+\[
+  \begin{vmatrix} a_{11} & a_{12} \\ a_{21} & a_{22} \end{vmatrix}
+  = a_{11}a_{22}-a_{12}a_{21},
+\]
+其中 $a_{ij}$（$i=1,2$ 为行标，$j=1,2$ 为列标）称为行列式的\textbf{元素}。
+\end{definition}
+
+二阶行列式可用“对角线法则”记忆：主对角线（左上至右下）两元素之积取正号，
+副对角线（右上至左下）两元素之积取负号。
+
+\begin{qa}{行列式到底是一个数，还是一张表？为什么只有方阵才能谈行列式？}
+答：行列式是一个\textbf{数}：它把 $n^2$ 个数（一张方表）按确定规则压缩成
+一个数。因此 $|A|$ 能参加普通四则运算，而 $A$ 本身不能。非方阵没有行列式，
+因为定义要求“每行每列各取一个元素、恰好取尽 $n$ 个”，行列数不同时无法
+配对；从稍后的几何观点看，“面积（体积）缩放因子”只对维数相同的空间之间
+的变换才有意义。
+\end{qa}
+
+\begin{example}
+计算二阶行列式 $\begin{vmatrix} 3 & 1 \\ 2 & 4 \end{vmatrix}$。
+\end{example}
+\begin{proof}[解]
+$\begin{vmatrix} 3 & 1 \\ 2 & 4 \end{vmatrix}=3\times 4-1\times 2=10$。
+\end{proof}
+
+类似地，解三元线性方程组时会出现形如
+\[
+  a_{11}a_{22}a_{33}+a_{12}a_{23}a_{31}+a_{13}a_{21}a_{32}
+  -a_{13}a_{22}a_{31}-a_{11}a_{23}a_{32}-a_{12}a_{21}a_{33}
+\]
+的六项代数和，称其为\textbf{三阶行列式}，记作
+\[
+  \begin{vmatrix}
+    a_{11} & a_{12} & a_{13} \\
+    a_{21} & a_{22} & a_{23} \\
+    a_{31} & a_{32} & a_{33}
+  \end{vmatrix}.
+\]
+三阶行列式也可按对角线法则展开：三条主对角线方向（平行于主对角线）之积取
+正号，三条副对角线方向之积取负号。注意对角线法则只适用于二阶、三阶行列式，
+更高阶的行列式需要一般的定义（见 \S\ref{sec:n-order}）。
+
+\begin{example}
+计算三阶行列式
+$D=\begin{vmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 10 \end{vmatrix}$。
+\end{example}
+\begin{proof}[解]
+\begin{align*}
+  D &= 1\cdot 5\cdot 10 + 2\cdot 6\cdot 7 + 3\cdot 4\cdot 8
+       - 3\cdot 5\cdot 7 - 1\cdot 6\cdot 8 - 2\cdot 4\cdot 10 \\
+    &= (50+84+96)-(105+48+80) = 230-233 = -3 .
+\end{align*}
+\end{proof}
+
+\subsection{几何直观：行列式是面积的缩放因子}
+
+把二阶行列式的两个列向量 $(a_{11},a_{21})\trans$ 与 $(a_{12},a_{22})\trans$
+画在平面上，它们张成一个平行四边形。把这个平行四边形沿对角线切开拼补，
+或直接用顶点坐标计算三角形面积，可以验证其面积恰为
+$\Bigl|\begin{vmatrix} a_{11} & a_{12} \\ a_{21} & a_{22} \end{vmatrix}\Bigr|$。
+于是：行列式的\textbf{绝对值}是“面积缩放因子”，\textbf{符号}表示“定向”——
+第一列转到第二列为逆时针时取正，顺时针时取负。
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[>=Stealth, scale=1.05]
+  \begin{scope}
+    \draw[->] (-0.4,0) -- (2.4,0) node[below] {$x_1$};
+    \draw[->] (0,-0.4) -- (0,2.4) node[left] {$x_2$};
+    \fill[blue!12] (0,0) -- (1,0) -- (1,1) -- (0,1) -- cycle;
+    \draw[very thick, blue!60!black, ->] (0,0) -- (1,0) node[below right] {$\varepsilon_1$};
+    \draw[very thick, blue!60!black, ->] (0,0) -- (0,1) node[left] {$\varepsilon_2$};
+    \node[below] at (1,-0.75) {标准基张成的单位正方形，面积 $1$};
+  \end{scope}
+  \draw[->, very thick, gray] (3.1,1) -- (4.5,1)
+        node[midway, above] {$A$};
+  \begin{scope}[xshift=5.6cm]
+    \draw[->] (-0.4,0) -- (3.2,0) node[below] {$y_1$};
+    \draw[->] (0,-0.4) -- (0,2.4) node[left] {$y_2$};
+    \fill[red!12] (0,0) -- (2,0) -- (3,1) -- (1,1) -- cycle;
+    \draw[very thick, red!70!black, ->] (0,0) -- (2,0) node[below] {$(2,0)\trans$};
+    \draw[very thick, red!70!black, ->] (0,0) -- (1,1) node[above left] {$(1,1)\trans$};
+    \draw[gray!60, dashed] (2,0) -- (3,1);
+    \draw[gray!60, dashed] (1,1) -- (3,1);
+    \node[below] at (1.5,-0.75) {列向量张成的平行四边形，面积 $2$};
+  \end{scope}
+\end{tikzpicture}
+\caption{矩阵 $A=\begin{pmatrix} 2 & 1 \\ 0 & 1 \end{pmatrix}$ 把单位正方形
+（面积 $1$）变成其列向量张成的平行四边形（面积 $2=|A|$）。行列式就是这次
+变换的面积缩放因子，符号记录定向是否翻转。}
+\label{fig:det-area}
+\end{figure}
+
+用这一幅图可以“看出”本章后面的许多性质：倍加变换（性质~\ref{prop:det-add}）
+相当于把平行四边形沿一条边的方向“推斜”，底不变、高不变，面积不变；两行
+相同（性质~\ref{prop:det-equal-rows}）相当于两条邻边重合，图形被压扁成线段，
+面积为 $0$；某行乘 $k$（性质~\ref{prop:det-factor}）相当于把一条边拉长 $k$
+倍，面积随之变为 $k$ 倍。三阶行列式同理是平行六面体的定向体积，$n$ 阶行列式
+是 $n$ 维“平行多面体”体积的缩放因子。
+
+\section{$n$ 阶行列式的定义}\label{sec:n-order}
+
+为了把行列式推广到任意阶，需要排列的概念。
+
+\begin{definition}\label{def:permutation}
+把 $n$ 个不同的元素排成一列，称为这 $n$ 个元素的一个\textbf{排列}。
+$n$ 个不同元素的所有排列共有 $n!$ 个。在一个排列中，若一个较大的数排在
+一个较小的数前面，就称这两个数构成一个\textbf{逆序}；一个排列中逆序的总数
+称为该排列的\textbf{逆序数}，记作 $t$。逆序数为奇数的排列称为\textbf{奇排列}，
+逆序数为偶数的排列称为\textbf{偶排列}。
+\end{definition}
+
+例如排列 $3\,2\,1$ 中，逆序有 $(3,2)$、$(3,1)$、$(2,1)$，故 $t=3$，它是奇排列；
+自然排列 $1\,2\,3$ 的逆序数为 $0$，是偶排列。
+
+\begin{theorem}\label{thm:swap-parity}
+对换一个排列中的两个元素，排列改变奇偶性。
+\end{theorem}
+\begin{proof}
+先看相邻对换：设排列 $\cdots i\,j\cdots$ 对换为 $\cdots j\,i\cdots$。此时只有
+$i,j$ 的相互顺序改变，其余元素间的逆序关系不变。若 $i,j$ 原本构成逆序，
+对换后逆序数减少 $1$；否则增加 $1$。故相邻对换使逆序数增减 $1$，奇偶性改变。
+
+再看一般对换：设两元素之间相隔 $2k$ 个元素（相距 $2k+1$ 个位置）。先把前一
+元素与其后的 $2k$ 个元素依次作相邻对换，再把它与 $j$ 对换，然后把 $j$ 与前面
+$2k$ 个元素依次作相邻对换，共作了 $2k+1$ 次相邻对换，每次都改变奇偶性，故
+总效果是奇偶性改变。
+\end{proof}
+
+\begin{definition}\label{def:det-n}
+设有 $n^2$ 个数排成 $n$ 行 $n$ 列，称
+\[
+  D=\begin{vmatrix}
+      a_{11} & a_{12} & \cdots & a_{1n} \\
+      a_{21} & a_{22} & \cdots & a_{2n} \\
+      \vdots & \vdots & \ddots & \vdots \\
+      a_{n1} & a_{n2} & \cdots & a_{nn}
+    \end{vmatrix}
+  =\sum_{p_1p_2\cdots p_n}(-1)^{t}\,a_{1p_1}a_{2p_2}\cdots a_{np_n}
+\]
+为\textbf{$n$ 阶行列式}，其中求和遍历列标排列 $p_1p_2\cdots p_n$ 的全部 $n!$
+种取法，$t$ 为排列 $p_1p_2\cdots p_n$ 的逆序数。
+\end{definition}
+
+直观地说，$n$ 阶行列式是所有“取自不同行、不同列的 $n$ 个元素之积”的代数和：
+每一项的行标按自然顺序排列，该项的符号由列标排列的奇偶性决定，偶排列取正号，
+奇排列取负号。
+
+按定义直接计算 $n!$ 项显然不现实，但某些特殊行列式可以立即得到结果。
+
+\begin{example}\label{ex:upper-tri}
+计算上三角行列式
+$D=\begin{vmatrix} a_{11} & a_{12} & \cdots & a_{1n} \\ & a_{22} & \cdots & a_{2n} \\ & & \ddots & \vdots \\ 0 & & & a_{nn} \end{vmatrix}$
+（主对角线以下元素均为 $0$）。
+\end{example}
+\begin{proof}[解]
+考虑任一非零项 $a_{1p_1}a_{2p_2}\cdots a_{np_n}$。第 $n$ 行只有 $a_{nn}$ 可能
+非零，故 $p_n=n$；第 $n-1$ 行只有 $a_{n-1,n-1}$ 与 $a_{n-1,n}$ 可能非零，
+而列号 $n$ 已被占用，故 $p_{n-1}=n-1$；依此类推，唯一的非零项是
+$a_{11}a_{22}\cdots a_{nn}$，其列标排列为自然排列，逆序数为 $0$。于是
+\[
+  D=a_{11}a_{22}\cdots a_{nn}.
+\]
+同理，下三角行列式与对角行列式也都等于主对角线元素之积。
+\end{proof}
+
+\begin{example}\label{ex:anti-diagonal}
+计算 $n$ 阶行列式
+\[
+  D_n=\begin{vmatrix}
+        0      &        &        & a_{1} \\
+               &        & a_{2}  & \\
+               & \iddots&        & \\
+        a_{n}  &        &        & 0
+      \end{vmatrix}
+\]
+（副对角线上元素依次为 $a_1,a_2,\cdots,a_n$，其余元素均为 $0$）。
+\end{example}
+\begin{proof}[解]
+非零项必须取自副对角线，即第 $i$ 行取第 $n+1-i$ 列的元素，列标排列为
+$n,\,n-1,\cdots,2,\,1$，其逆序数为
+$t=0+1+2+\cdots+(n-1)=\dfrac{n(n-1)}{2}$。于是
+\[
+  D_n=(-1)^{\frac{n(n-1)}{2}}a_1a_2\cdots a_n .
+\]
+\end{proof}
+
+\begin{insight}[本质：用三条要求刻画行列式]
+$n!$ 项求和的定义不适合“理解”，它适合“证明”。行列式真正的本质是：它把
+方阵对应成一个数，并且是满足下列三条自然要求的\textbf{唯一}函数——
+（i）对每一行都是线性的（某行拆成两数之和，行列式随之拆开；某行提出公因子
+$k$，行列式提出 $k$）；（ii）交换两行，行列式变号（特别地，两行相同则为
+零）；（iii）单位矩阵的行列式为 $1$。先承认这三条，行列式的取值就被完全
+确定，$n!$ 项的公式只是它的副产品。本章的所有性质、按行展开定理乃至克拉默
+法则，都可以从这三条推出；在抽象代数中，这正是行列式的标准定义。
+\end{insight}
+
+\begin{qa}{定义中的每一项为什么必须取自“不同的行、不同的列”？符号为什么恰好由逆序数的奇偶决定？}
+答：因为行列式“对每一行都是线性的”：把行列式按第 1 行、第 2 行……逐行
+拆开，每一项中每一行恰好贡献一个因子，共 $n$ 个；再要求这 $n$ 个因子取自
+不同列，才能既不重复又不遗漏地遍历所有取法，共 $n!$ 项。至于符号，它必须
+满足“交换两行变号”：交换两行使每一项的列标排列恰好作一次对换，由定理
+~\ref{thm:swap-parity}（一次对换改变奇偶性），所有项的符号一齐改变，整个
+和恰好变号。换句话说，$(-1)^t$ 是让“变号”能够\textbf{整体一致}发生的
+唯一可行的记账方式。
+\end{qa}
+
+\section{行列式的性质}\label{sec:det-properties}
+
+把行列式 $D$ 的行与列互换（第 $i$ 行变为第 $i$ 列）所得的行列式称为 $D$ 的
+\textbf{转置行列式}，记作 $D\trans$。下列性质对行与列同样成立，故只对行叙述。
+
+\begin{property}[行列式与它的转置行列式相等]\label{prop:det-transpose}
+$D=D\trans$。
+\end{property}
+
+按定义，$D\trans$ 的每一项可把因子按行标（即 $D$ 的列标）大小重新排序，
+其符号由 $D$ 的行标排列决定；可以证明一个排列与其逆排列的逆序数奇偶性相同，
+故 $D\trans$ 与 $D$ 的项一一对应且符号相同（证明从略）。由该性质，凡对行成立
+的性质对列也成立。
+
+\begin{property}[对换两行，行列式变号]\label{prop:det-swap}
+对换行列式的两行（列），行列式变号。
+\end{property}
+\begin{proof}
+对换第 $i,j$ 两行后，每一项的行标排列相当于原排列经过一次对换，由定理
+\ref{thm:swap-parity}，每一项都改变符号，故行列式变号。
+\end{proof}
+
+\begin{property}[两行相同则为零]\label{prop:det-equal-rows}
+若行列式有两行（列）完全相同，则此行列式等于 $0$。
+\end{property}
+\begin{proof}
+对换相同的两行，行列式不变；但由性质~\ref{prop:det-swap} 它又应变号，即
+$D=-D$，故 $D=0$。
+\end{proof}
+
+\begin{property}[行的公因子可提出]\label{prop:det-factor}
+行列式某一行（列）的所有元素的公因子可以提到行列式记号外面，即
+\[
+  \begin{vmatrix}
+    a_{11} & \cdots & a_{1n} \\
+    \vdots &        & \vdots \\
+    ka_{i1} & \cdots & ka_{in} \\
+    \vdots &        & \vdots
+  \end{vmatrix}
+  =k
+  \begin{vmatrix}
+    a_{11} & \cdots & a_{1n} \\
+    \vdots &        & \vdots \\
+    a_{i1} & \cdots & a_{in} \\
+    \vdots &        & \vdots
+  \end{vmatrix}.
+\]
+\end{property}
+
+由定义，每一项恰含第 $i$ 行的一个因子，提出公因子 $k$ 即得。
+
+\begin{property}[两行成比例则为零]\label{prop:det-proportional}
+若行列式有两行（列）的对应元素成比例，则此行列式等于 $0$。
+\end{property}
+\begin{proof}
+设第 $j$ 行是第 $i$ 行的 $k$ 倍。由性质~\ref{prop:det-factor} 提出公因子 $k$
+后，行列式有两行相同，再由性质~\ref{prop:det-equal-rows} 即得结论。
+\end{proof}
+
+\begin{property}[行可拆分]\label{prop:det-split}
+若行列式的某一行的元素都是两数之和，则该行列式可拆成两个行列式之和，例如
+\[
+  \begin{vmatrix} a_{11} & a_{12} \\ b_1+c_1 & b_2+c_2 \end{vmatrix}
+  =\begin{vmatrix} a_{11} & a_{12} \\ b_1 & b_2 \end{vmatrix}
+  +\begin{vmatrix} a_{11} & a_{12} \\ c_1 & c_2 \end{vmatrix}.
+\]
+\end{property}
+\begin{proof}
+按定义，左边每一项 $a_{1p_1}(b_{p_2}+c_{p_2})$ 恰好拆成右边两个行列式对应
+项之和，对应求和即得。
+\end{proof}
+
+\begin{property}[倍加不变]\label{prop:det-add}
+把行列式某一行（列）的各元素乘以同一数 $k$ 后加到另一行（列）对应的元素上，
+行列式不变。
+\end{property}
+\begin{proof}
+以 $r_i+k r_j$ 代替 $r_i$（记号 $r_i$ 表示第 $i$ 行），由性质~\ref{prop:det-split}
+与性质~\ref{prop:det-proportional}，
+\[
+  \begin{vmatrix} \vdots \\ r_i+kr_j \\ \vdots \end{vmatrix}
+  =\begin{vmatrix} \vdots \\ r_i \\ \vdots \end{vmatrix}
+  +\begin{vmatrix} \vdots \\ kr_j \\ \vdots \end{vmatrix}
+  =D+0=D .\qedhere
+\]
+\end{proof}
+
+\begin{qa}{为什么“某行加上另一行的倍数”不改变行列式，而“某行乘以 $k$”却要把 $k$ 提出行列式？}
+答：代数上：倍加后按性质~\ref{prop:det-split} 拆开，第二项的两行成比例，
+由性质~\ref{prop:det-proportional} 等于零；而数乘后\textbf{每一项}都恰含该
+行的一个因子，$k$ 被所有项公共提取。几何上（图~\ref{fig:det-area}）：倍加
+相当于把平行四边形沿一条边的方向“推斜”（剪切），底不变、高不变，面积当然
+不变；数乘则真的把一条边拉长了 $k$ 倍，面积随之扩大 $k$ 倍。
+\end{qa}
+
+利用这些性质，可以把行列式化为上三角形式再计算，这是计算行列式的基本方法。
+
+\begin{example}\label{ex:det-48}
+计算四阶行列式
+$D=\begin{vmatrix} 3 & 1 & 1 & 1 \\ 1 & 3 & 1 & 1 \\ 1 & 1 & 3 & 1 \\ 1 & 1 & 1 & 3 \end{vmatrix}$。
+\end{example}
+\begin{proof}[解]
+\begin{align*}
+  D &\xlongequal{r_i-r_1\ (i=2,3,4)}
+  \begin{vmatrix} 3 & 1 & 1 & 1 \\ -2 & 2 & 0 & 0 \\ -2 & 0 & 2 & 0 \\ -2 & 0 & 0 & 2 \end{vmatrix}
+  \xlongequal{c_1+c_2+c_3+c_4}
+  \begin{vmatrix} 6 & 1 & 1 & 1 \\ 0 & 2 & 0 & 0 \\ 0 & 0 & 2 & 0 \\ 0 & 0 & 0 & 2 \end{vmatrix} \\
+    &=6\times 2\times 2\times 2=48 ,
+\end{align*}
+其中 $c_j$ 表示第 $j$ 列，$r_i$ 表示第 $i$ 行。
+\end{proof}
+
+\section{行列式按行（列）展开}
+
+高阶行列式可以通过“降阶”化为低阶行列式计算。
+
+\begin{definition}\label{def:cofactor}
+在 $n$ 阶行列式中，把元素 $a_{ij}$ 所在的第 $i$ 行和第 $j$ 列划去后，余下的
+$n-1$ 阶行列式称为 $a_{ij}$ 的\textbf{余子式}，记作 $M_{ij}$；称
+$A_{ij}=(-1)^{i+j}M_{ij}$ 为 $a_{ij}$ 的\textbf{代数余子式}。
+\end{definition}
+
+\begin{theorem}[展开定理]\label{thm:expansion}
+行列式等于它的任一行（列）的各元素与其对应的代数余子式乘积之和，即
+\[
+  D=a_{i1}A_{i1}+a_{i2}A_{i2}+\cdots+a_{in}A_{in}\qquad (i=1,2,\cdots,n).
+\]
+\end{theorem}
+\begin{proof}
+先证特殊情形：第 $i$ 行除 $a_{ij}$ 外全为零。此时定义中的非零项必取 $a_{ij}$，
+其余 $n-1$ 个因子取自划去第 $i$ 行、第 $j$ 列后的子式，该项的符号等于
+$(-1)^{t}$，其中 $t$ 可分解为列标排列与行标排列两部分逆序之和，恰为
+$(-1)^{i+j}M_{ij}$ 的符号，于是 $D=a_{ij}A_{ij}$。
+
+一般情形：把第 $i$ 行写为 $n$ 个“只有一个非零元”的向量之和，由性质
+\ref{prop:det-split} 拆成 $n$ 个上述特殊情形的行列式之和，即得
+$D=\sum_{j=1}^{n}a_{ij}A_{ij}$。
+\end{proof}
+
+\begin{corollary}\label{cor:alien-cofactor}
+行列式某一行（列）的元素与另一行（列）对应元素的代数余子式乘积之和为零，即
+当 $i\neq k$ 时，
+\[
+  a_{i1}A_{k1}+a_{i2}A_{k2}+\cdots+a_{in}A_{kn}=0 .
+\]
+\end{corollary}
+\begin{proof}
+把 $D$ 的第 $k$ 行换成第 $i$ 行的元素，所得行列式 $D'$ 有两行相同，故 $D'=0$；
+把 $D'$ 按第 $k$ 行展开，注意 $D'$ 的第 $k$ 行元素的代数余子式与 $D$ 的相同，
+即得 $\sum_{j}a_{ij}A_{kj}=0$。
+\end{proof}
+
+\begin{example}\label{ex:expand-3}
+按第一行展开计算
+$D=\begin{vmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 10 \end{vmatrix}$。
+\end{example}
+\begin{proof}[解]
+\begin{align*}
+  D &= 1\cdot\begin{vmatrix} 5 & 6 \\ 8 & 10 \end{vmatrix}
+      -2\cdot\begin{vmatrix} 4 & 6 \\ 7 & 10 \end{vmatrix}
+      +3\cdot\begin{vmatrix} 4 & 5 \\ 7 & 8 \end{vmatrix} \\
+    &= 1\times(50-48)-2\times(40-42)+3\times(32-35)
+     = 2+4-9=-3,
+\end{align*}
+与 \S 1.1 中对角线法则的结果一致。
+\end{proof}
+
+\begin{theorem}[范德蒙德行列式]\label{thm:vandermonde}
+\[
+  V_n=\begin{vmatrix}
+    1      & 1      & \cdots & 1      \\
+    x_1    & x_2    & \cdots & x_n    \\
+    x_1^2  & x_2^2  & \cdots & x_n^2  \\
+    \vdots & \vdots & \ddots & \vdots \\
+    x_1^{n-1} & x_2^{n-1} & \cdots & x_n^{n-1}
+  \end{vmatrix}
+  =\prod_{1\le i<j\le n}(x_j-x_i).
+\]
+\end{theorem}
+\begin{proof}
+对 $n$ 作归纳。$n=2$ 时结论显然。设结论对 $n-1$ 成立。把 $V_n$ 看作最后一个
+变量 $x_n$ 的多项式，其次数为 $n-1$。当 $x_n=x_i$（$i<n$）时行列式有两列
+相同，故 $V_n=0$，即 $x_n-x_1,\cdots,x_n-x_{n-1}$ 都是该多项式的因式。这些
+因式两两互素，其乘积的次数为 $n-1$，与 $V_n$ 关于 $x_n$ 的次数相同，故
+\[
+  V_n=c\,(x_n-x_1)(x_n-x_2)\cdots(x_n-x_{n-1}),
+\]
+其中 $c$ 是 $x_n^{n-1}$ 的系数。按最后一行展开，$x_n^{n-1}$ 只出现在代数余
+子式为 $V_{n-1}(x_1,\cdots,x_{n-1})$ 的项中，故 $c=V_{n-1}$。由归纳假设
+\[
+  V_n=\prod_{i=1}^{n-1}(x_n-x_i)\cdot\prod_{1\le i<j\le n-1}(x_j-x_i)
+     =\prod_{1\le i<j\le n}(x_j-x_i). \qedhere
+\]
+\end{proof}
+
+例如
+$\begin{vmatrix} 1 & 1 & 1 \\ 1 & 2 & 3 \\ 1 & 4 & 9 \end{vmatrix}
+=(2-1)(3-1)(3-2)=2$。
+
+\section{克拉默法则}\label{sec:cramer}
+
+现在回到本章开始的线性方程组问题。
+
+\begin{theorem}[克拉默法则]\label{thm:cramer}
+含有 $n$ 个方程、$n$ 个未知数的线性方程组
+\[
+  \begin{cases}
+    a_{11}x_1+a_{12}x_2+\cdots+a_{1n}x_n=b_1, \\
+    a_{21}x_1+a_{22}x_2+\cdots+a_{2n}x_n=b_2, \\
+    \quad\cdots\cdots                                         \\
+    a_{n1}x_1+a_{n2}x_2+\cdots+a_{nn}x_n=b_n
+  \end{cases}
+\]
+当其系数行列式
+\[
+  D=\begin{vmatrix} a_{11} & \cdots & a_{1n} \\ \vdots & & \vdots \\ a_{n1} & \cdots & a_{nn} \end{vmatrix}\neq 0
+\]
+时有唯一解，且解为
+\[
+  x_1=\frac{D_1}{D},\qquad x_2=\frac{D_2}{D},\qquad\cdots,\qquad x_n=\frac{D_n}{D},
+\]
+其中 $D_j$ 是把 $D$ 的第 $j$ 列换成常数项列 $b_1,b_2,\cdots,b_n$ 所得的行列式。
+\end{theorem}
+\begin{proof}
+记方程组的系数矩阵为 $A$（矩阵的概念见第二章），$D_j=\sum_{k=1}^{n}b_kA_{kj}$
+（把 $D_j$ 按第 $j$ 列展开）。
+
+\textbf{解的存在性：}令 $x_j=D_j/D$。代入第 $i$ 个方程，利用推论~\ref{cor:alien-cofactor}
+与展开定理，
+\[
+  \sum_{j=1}^{n}a_{ij}\frac{D_j}{D}
+  =\frac{1}{D}\sum_{j=1}^{n}a_{ij}\sum_{k=1}^{n}b_kA_{kj}
+  =\frac{1}{D}\sum_{k=1}^{n}b_k\sum_{j=1}^{n}a_{ij}A_{kj}
+  =\frac{1}{D}\sum_{k=1}^{n}b_k\,\delta_{ik}D=b_i,
+\]
+其中 $\delta_{ik}=1$（$i=k$）或 $0$（$i\neq k$）。故所给 $x_j$ 确为解。
+
+\textbf{解的唯一性：}设 $x_1,\cdots,x_n$ 为任一解。对每个 $j$，用代数余子式
+$A_{mj}$（$m=1,\cdots,n$）乘第 $m$ 个方程后相加，$x_j$ 以外的未知数系数由
+推论~\ref{cor:alien-cofactor} 知为零，得
+\[
+  \Big(\sum_{m=1}^{n}a_{mj}A_{mj}\Big)x_j
+  =\sum_{m=1}^{n}b_mA_{mj},
+  \quad\text{即}\quad
+  D\,x_j=D_j,\quad x_j=\frac{D_j}{D}. \qedhere
+\]
+\end{proof}
+
+\begin{corollary}\label{cor:homog}
+若齐次线性方程组（$b_1=\cdots=b_n=0$）的系数行列式 $D\neq 0$，则它只有零解；
+等价地，若齐次线性方程组有非零解，则 $D=0$。
+\end{corollary}
+
+\begin{example}\label{ex:cramer}
+解线性方程组
+\[
+  \begin{cases}
+    x_1+x_2+x_3=6, \\
+    x_1+2x_2+3x_3=14, \\
+    x_1+4x_2+9x_3=36.
+  \end{cases}
+\]
+\end{example}
+\begin{proof}[解]
+系数行列式是范德蒙德行列式：
+\[
+  D=\begin{vmatrix} 1 & 1 & 1 \\ 1 & 2 & 3 \\ 1 & 4 & 9 \end{vmatrix}=2 .
+\]
+分别算得
+\[
+  D_1=\begin{vmatrix} 6 & 1 & 1 \\ 14 & 2 & 3 \\ 36 & 4 & 9 \end{vmatrix}=2,
+  \qquad
+  D_2=\begin{vmatrix} 1 & 6 & 1 \\ 1 & 14 & 3 \\ 1 & 36 & 9 \end{vmatrix}=4,
+  \qquad
+  D_3=\begin{vmatrix} 1 & 1 & 6 \\ 1 & 2 & 14 \\ 1 & 4 & 36 \end{vmatrix}=6,
+\]
+故 $x_1=D_1/D=1$，$x_2=D_2/D=2$，$x_3=D_3/D=3$。
+\end{proof}
+
+\begin{qa}{系数行列式 $D=0$ 时方程组会怎样？克拉默法则在实际计算中好用吗？}
+答：克拉默法则只处理 $D\neq0$ 的情形，并断言此时解存在且唯一。当 $D=0$ 时
+方程组可能无解、也可能有无穷多解，单靠行列式无法区分，这需要第四章的秩
+判别法（比较 $r(A)$ 与 $r(A\mid b)$）。计算上，克拉默法则要算 $n+1$ 个 $n$
+阶行列式，代价随 $n$ 急剧增长，实际数值求解都采用第四章的高斯消元法；克拉
+默法则的价值在于给出解的\textbf{显式公式}与理论判据（例如立即得到推论
+~\ref{cor:homog}，并在第二章给出可逆性判别）。
+\end{qa}
+
+\chapterexercises{一}
+
+\begin{enumerate}[label=\arabic*., itemsep=2pt]
+\item 计算下列行列式：
+  \[
+  \text{(1)}\ \begin{vmatrix} 2 & 0 & 1 \\ 1 & 3 & 5 \\ 4 & 1 & 2 \end{vmatrix};
+  \qquad
+  \text{(2)}\ \begin{vmatrix} a & b & c \\ b & c & a \\ c & a & b \end{vmatrix}.
+  \]
+\item 计算四阶行列式
+  $\begin{vmatrix} 3 & 1 & 1 & 1 \\ 1 & 3 & 1 & 1 \\ 1 & 1 & 3 & 1 \\ 1 & 1 & 1 & 3 \end{vmatrix}$。
+\item 计算四阶行列式
+  $\begin{vmatrix} 1 & 2 & 0 & 0 \\ 3 & 4 & 0 & 0 \\ 0 & 0 & 5 & 6 \\ 0 & 0 & 7 & 8 \end{vmatrix}$。
+\item 证明：若行列式的某一行是两组数的和，则行列式可按该行拆成两个行列式之和
+  （性质~\ref{prop:det-split} 的一般形式）。
+\item 利用性质证明性质~\ref{prop:det-proportional}（两行成比例的行列式为零）。
+\item 用克拉默法则解方程组
+  $\begin{cases} x_1+2x_2=5, \\ 3x_1+4x_2=9. \end{cases}$
+\item 用克拉默法则解方程组
+  $\begin{cases} x_1+x_2+x_3=3, \\ x_1+2x_2+3x_3=6, \\ 2x_1+x_2+x_3=4. \end{cases}$
+\item $\lambda$ 取何值时，齐次线性方程组
+  $\begin{cases} x_1+\lambda x_2=0, \\ \lambda x_1+x_2=0 \end{cases}$
+  有非零解？
+\item 证明：若 $n$ 元齐次线性方程组有非零解，则其系数行列式等于零。
+\item 计算四阶范德蒙德行列式
+  $\begin{vmatrix} 1 & 1 & 1 & 1 \\ 1 & 2 & 3 & 4 \\ 1 & 4 & 9 & 16 \\ 1 & 8 & 27 & 64 \end{vmatrix}$。
+\end{enumerate}
