@@ -89,6 +89,43 @@ $\beta=(1,2,3)$ 能否由 $\alpha_1=(1,1,0)$、$\alpha_2=(0,1,1)$ 线性表示�
 几何上：两个向量线性相关当且仅当其中一个是另一个的倍数（共线）；$\R^3$ 中
 三个向量线性相关当且仅当它们共面（在同一张过原点的平面上）。
 
+\begin{qa}{“线性相关”“线性无关”这两个名字到底在说什么？}
+答：相关的本义是\textbf{组内有冗余}：至少有一个向量能由其余向量拼出来（定理
+~\ref{thm:dependent-one-of}），它没有带来任何新信息——把它从组里删掉，能张成
+的空间不变。无关的本义是\textbf{谁也不欠谁}：任何一个向量都无法由其余向量拼出，
+每个向量都贡献了不可替代的一维信息。含零向量的组必相关，因为零向量可以由任何
+组白搭出来。判断的机械做法：把向量按列排成 $A$，解 $Ak=0$，只有零解则无关，
+有非零解则相关。
+\end{qa}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[>=Stealth, scale=0.95]
+  \begin{scope}
+    \draw[->] (-0.6,0) -- (3.6,0);
+    \draw[->] (0,-0.4) -- (0,2.6);
+    \draw[gray!60, ->] (0,0) -- (3.2,1.0) node[right] {$2\alpha_1$};
+    \draw[gray!60, ->] (0,0) -- (1.1,2.0) node[above] {$\alpha_1+\alpha_2$};
+    \draw[very thick, blue!60!black, ->] (0,0) -- (1.6,0.5) node[below right] {$\alpha_1$};
+    \draw[very thick, red!70!black, ->] (0,0) -- (-0.5,1.5) node[above] {$\alpha_2$};
+    \node[below] at (1.5,-0.85) {无关：组合可达全平面};
+  \end{scope}
+  \draw[->, very thick, gray] (4.5,1) -- (5.5,1);
+  \begin{scope}[xshift=7.2cm]
+    \draw[->] (-2.1,0) -- (2.1,0);
+    \draw[->] (0,-1.2) -- (0,1.9);
+    \draw[dashed, gray] (-1.9,-1.05) -- (1.9,1.05);
+    \draw[very thick, blue!60!black, ->] (0,0) -- (1.5,0.83) node[above right] {$\alpha_1$};
+    \draw[very thick, red!70!black, ->] (0,0) -- (-1.2,-0.67) node[below left] {$\alpha_2=-0.8\alpha_1$};
+    \node[below] at (0,-1.55) {相关：组合被困在这条线上};
+  \end{scope}
+\end{tikzpicture}
+\caption{左：线性无关的两个向量，其全部线性组合铺满整个平面（张成 $=\R^2$）；
+右：线性相关时 $\alpha_2$ 落在 $\alpha_1$ 所在的直线上，无论怎样组合都出不了
+这条直线——张成“塌缩”成一维。}
+\label{fig:span}
+\end{figure}
+
 \begin{theorem}\label{thm:dependent-one-of}
 向量组 $\alpha_1,\cdots,\alpha_m$ 线性相关的充分必要条件是其中至少有一个
 向量可由其余向量线性表示。
@@ -163,6 +200,15 @@ $\sum k_i\varepsilon_i=(k_1,\cdots,k_n)=0$ 立得每个 $k_i=0$。
 的\textbf{秩}。
 \end{definition}
 
+\begin{qa}{极大无关组的“极大”是什么意思？它唯一吗？}
+答：“极大”指\textbf{不能再添}：往这个部分组里再加入原组的任何一个别的向量，
+新组就变得线性相关（由定理~\ref{thm:unique-representation}，被加入的向量必能
+由部分组线性表示）。极大无关组一般\textbf{不唯一}——同一个向量组常有多组选择，
+但它们所含向量的个数相同（定理~\ref{thm:represent-inequality}），这个公共个数
+就是向量组的秩。可以把极大无关组理解为向量组“删除全部冗余后的无损摘要”：
+摘要的写法可以不同，长度必须一致。
+\end{qa}
+
 按定义，秩似乎依赖于所选的极大无关组；下面的结果表明它是唯一确定的。先给出
 一个联系列向量组关系与初等行变换的引理。
 
@@ -233,6 +279,14 @@ $\alpha_4=(2,1,5)$ 的一个极大无关组与秩，并把其余向量用该极�
   \alpha_3=\alpha_1+\alpha_2,\qquad \alpha_4=2\alpha_1+\alpha_2 .
 \]
 \end{proof}
+
+\begin{insight}[本质：秩 = 独立信息的条数]
+向量组的秩，就是把它压到“没有一条冗余”时剩下的向量个数：\textbf{独立信息的
+条数}。线性相关 = 有冗余；极大无关组 = 删除冗余后的无损压缩；矩阵的秩 =
+列空间（即变换的像空间，见第二章）的维数。变换 $A$ 把 $n$ 维输入压到
+$r(A)$ 维像空间，损失了 $n-r(A)$ 维——这个“损失的维数”将在第四章以“基础
+解系所含向量的个数”的身份再次出现。
+\end{insight}
 
 \section{向量空间、基与坐标}
 

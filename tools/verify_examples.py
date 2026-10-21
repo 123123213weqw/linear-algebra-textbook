@@ -245,6 +245,68 @@ check('ex3.9  det of [(1,1,0),(0,1,1),(l,0,1)] columns = 1+l -> dependent iff l=
           for l in (-2, -1, 0, 3)))
 
 
+# ---------- Chapter 4: linear systems ----------
+
+def Alm(l):
+    return mat([[F(l), 1, 1], [1, F(l), 1], [1, 1, F(l)]])
+
+
+check('ex4.1 det [[l,1,1],[1,l,1],[1,1,l]] = (l+2)(l-1)^2 at l=0,1,-2',
+      det(Alm(0)) == 2 and det(Alm(1)) == 0 and det(Alm(-2)) == 0)
+
+st, x = solve(Alm(2), [1, 2, 4])
+check('ex4.1 l=2: unique solution (-3/4, 1/4, 9/4)',
+      st == 'unique' and x == [F(-3, 4), F(1, 4), F(9, 4)])
+
+check('ex4.1 l=1: infinitely many solutions; l=-2: none',
+      solve(Alm(1), [1, 1, 1])[0] == 'inf'
+      and solve(Alm(-2), [1, -2, 4])[0] == 'none')
+
+A = mat([[1, 1, 1, 1], [2, 3, 4, 5]])
+z2 = mat([[0], [0]])
+check('ex4.2 fundamental system (1,-2,1,0),(2,-3,0,1)',
+      same(mul(A, mat([[1], [-2], [1], [0]])), z2)
+      and same(mul(A, mat([[2], [-3], [0], [1]])), z2))
+
+A = mat([[1, 1, 1], [1, 2, 3]])
+check('ex4.3 particular solution (0,3,0); null direction (1,-2,1)',
+      same(mul(A, mat([[0], [3], [0]])), mat([[3], [6]]))
+      and same(mul(A, mat([[1], [-2], [1]])), mat([[0], [0]])))
+
+A = mat([[1, 1, 1], [1, 2, 2], [0, 1, 1]])
+z3 = mat([[0], [0], [0]])
+check('ex4.1e solution set (1,1,0)+c(0,-1,1)',
+      same(mul(A, mat([[1], [1], [0]])), mat([[2], [3], [1]]))
+      and same(mul(A, mat([[0], [-1], [1]])), z3))
+
+A = mat([[1, 2, 3], [2, 4, 6], [3, 6, 9]])
+check('ex4.2e nullspace basis (-2,1,0),(-3,0,1)',
+      same(mul(A, mat([[-2], [1], [0]])), z3)
+      and same(mul(A, mat([[-3], [0], [1]])), z3))
+
+A = mat([[1, 1, 1, 1], [1, 2, 3, 4]])
+check('ex4.3e particular (-2,6,0,0); nulls (1,-2,1,0),(2,-3,0,1)',
+      same(mul(A, mat([[-2], [6], [0], [0]])), mat([[4], [10]]))
+      and same(mul(A, mat([[1], [-2], [1], [0]])), z2)
+      and same(mul(A, mat([[2], [-3], [0], [1]])), z2))
+
+A = mat([[1, 2, 3], [2, 3, 1], [1, 1, 1]])
+check('ex4.7e unique system has solution (1,1,1)',
+      same(mul(A, mat([[1], [1], [1]])), mat([[6], [6], [3]])))
+
+def Lm(l):
+    return mat([[F(l) + 1, 1, 1], [1, F(l) + 1, 1], [1, 1, F(l) + 1]])
+
+
+check('ex4.4e det = l^2(l+3): vanishes at l=0,-3; equals 4 at l=1',
+      det(Lm(0)) == 0 and det(Lm(-3)) == 0 and det(Lm(1)) == 4)
+
+check('ex4.4e nullspace at l=0: (1,-1,0),(1,0,-1); at l=-3: (1,1,1)',
+      same(mul(Lm(0), mat([[1], [-1], [0]])), z3)
+      and same(mul(Lm(0), mat([[1], [0], [-1]])), z3)
+      and same(mul(Lm(-3), mat([[1], [1], [1]])), z3))
+
+
 # ---------- summary ----------
 
 if all(RESULTS):

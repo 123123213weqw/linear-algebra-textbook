@@ -42,7 +42,7 @@ chapters/preface.tex         # 前言
 chapters/ch1-determinants.tex
 chapters/ch2-matrices.tex
 chapters/ch3-vectors.tex
-chapters/ch4-linear-systems.tex   # in progress
+chapters/ch4-linear-systems.tex
 chapters/ch5-eigen.tex            # in progress
 chapters/ch6-quadratic.tex        # in progress
 chapters/appendix-answers.tex     # in progress
@@ -61,8 +61,8 @@ suggestion). Numeric claims in the worked examples are checked by
 
 ## Status
 
-Draft v0.1 — Chapters 1–3 (determinants, matrices, vectors) are complete with
-definitions, theorems and proofs, worked examples, figures, Q&A boxes, and
-end-of-chapter exercises. Chapters 4–6 and the answers appendix are in progress
-and will be pushed as they are written. Every push re-runs the numeric
-verification (28 checks so far) before the PDF is published.
+Draft v0.1 — Chapters 1–4 (determinants, matrices, vectors, linear systems) are
+complete with definitions, theorems and proofs, worked examples, figures, Q&A
+boxes, and end-of-chapter exercises. Chapters 5–6 and the answers appendix are
+in progress and will be pushed as they are written. Every push re-runs the
+numeric verification (39 checks so far) before the PDF is published.

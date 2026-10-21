@@ -1,0 +1,294 @@
+\chapter{线性方程组}
+
+第一章的克拉默法则只解决了最特殊的情形：方程个数与未知数个数相等，且系数
+行列式非零。本章用秩作工具，把\textbf{任意}线性方程组的三大问题一次说清：
+什么时候有解？解是否唯一？解不唯一时，全部解长什么样？
+
+\begin{insight}[观点：方程 = 约束，解方程组 = 求交集]
+一个线性方程就是对位置的一条规定：二元方程画出平面上的一条\textbf{直线}，
+三元方程画出空间里的一张\textbf{平面}。解方程组，就是求这些直线、平面的
+\textbf{公共点}。三条直线可能交于一点、交成一片，也可能永远碰不到一起——
+“有没有解、有多少解”因此有了画面；本章的判定定理（秩判别法）就是把这个
+画面翻译成代数。
+\end{insight}
+
+\section{消元法与解的判定定理}\label{sec:elimination}
+
+设有 $m$ 个方程、$n$ 个未知数的线性方程组 $Ax=b$。把系数与常数并排写成
+\[
+  B=(A\mid b),
+\]
+称为\textbf{增广矩阵}。求解的标准动作是：对 $B$ 作初等行变换（消元的机械化
+形式，第二章 \S\ref{sec:elementary}），化为行阶梯形——每作一次行变换，方程组
+同解。
+
+\begin{theorem}[解的判定定理]\label{thm:solvability}
+设 $A$ 为 $m\times n$ 系数矩阵，$B=(A\mid b)$ 为增广矩阵，则：
+\begin{enumerate}[label=(\arabic*), itemsep=0pt]
+  \item $Ax=b$ 有解 $\iff$ $\rank(A)=\rank(B)$；
+  \item 有解时，若 $\rank(A)=n$（未知数个数），解唯一；若 $\rank(A)=r<n$，
+        有无穷多解。
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+对 $B$ 作行变换化为行阶梯形，方程组同解。阶梯形中出现矛盾行
+$(0,\cdots,0\mid d)$（$d\neq0$，即 $0=d$）当且仅当 $B$ 的非零行比 $A$ 的多，
+即 $\rank(B)=\rank(A)+1$；此时无解。若无矛盾行，则 $\rank(B)=\rank(A)$，
+回代可解出全部主元未知数；自由未知量（非主元列对应的未知数）的个数为
+$n-r$。$r=n$ 时没有自由未知量，解唯一；$r<n$ 时自由未知量可任取，解有无穷
+多个。
+\end{proof}
+
+对 $n$ 个未知数、$n$ 个方程的情形，$\rank(A)=n\iff|A|\neq0$，判定定理与
+克拉默法则的结论一致——秩判别法是克拉默法则的推广，且不再要求方阵。
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[scale=0.78, >=Stealth]
+  % (a) unique solution: three planes through one point
+  \begin{scope}
+    \draw[fill=blue!10, draw=blue!50!black, opacity=0.9]
+      (0.1,0.55) -- (1.55,0.1) -- (1.85,1.05) -- (0.4,1.5) -- cycle;
+    \draw[fill=red!10, draw=red!50!black, opacity=0.9]
+      (0.35,0.2) -- (1.9,0.55) -- (1.55,1.55) -- (0.0,1.2) -- cycle;
+    \draw[fill=green!10, draw=green!45!black, opacity=0.9]
+      (0.5,0.0) -- (1.95,0.35) -- (1.75,1.35) -- (0.3,1.0) -- cycle;
+    \fill (1.18,0.83) circle (1.9pt);
+    \node[below] at (1.1,-0.55) {(a) $\rank(A)=\rank(B)=3$：唯一解};
+  \end{scope}
+  % (b) a common line
+  \begin{scope}[xshift=4.9cm]
+    \draw[very thick, black!70] (0.15,0.75) -- (2.0,0.45);
+    \draw[fill=blue!10, draw=blue!50!black, opacity=0.9]
+      (0.0,0.6) -- (1.7,0.15) -- (1.95,1.0) -- (0.25,1.45) -- cycle;
+    \draw[fill=red!10, draw=red!50!black, opacity=0.9]
+      (0.25,0.35) -- (1.95,0.6) -- (1.7,1.6) -- (0.0,1.35) -- cycle;
+    \draw[fill=green!10, draw=green!45!black, opacity=0.9]
+      (0.3,0.85) -- (2.05,0.5) -- (2.2,1.35) -- (0.45,1.7) -- cycle;
+    \node[below] at (1.1,-0.55) {(b) $\rank(A)=\rank(B)=2<3$：无穷多解};
+  \end{scope}
+  % (c) no common point: two parallel planes
+  \begin{scope}[xshift=9.8cm]
+    \draw[fill=blue!10, draw=blue!50!black, opacity=0.9]
+      (0.0,0.2) -- (1.6,0.0) -- (1.9,0.9) -- (0.3,1.1) -- cycle;
+    \draw[fill=blue!25, draw=blue!50!black, opacity=0.9]
+      (0.45,0.75) -- (2.05,0.55) -- (2.35,1.45) -- (0.75,1.65) -- cycle;
+    \node at (1.15,2.0) {\small 平行，永不相交};
+    \node[below] at (1.1,-0.55) {(c) $\rank(A)<\rank(B)$：无解};
+  \end{scope}
+\end{tikzpicture}
+\caption{三元方程组的解集 = 三张平面的公共点，三种命运由秩完全决定。}
+\label{fig:three-planes}
+\end{figure}
+
+\begin{qa}{有了行列式判别（$|A|\neq0$），为什么还要引入秩来判别？}
+答：行列式只对\textbf{方阵}才有意义，而实际方程组常常“方程数 $\neq$ 未知数
+数”，或系数行列式恰为零——这些情形行列式根本无从开口。秩对任意矩阵都有
+定义，一次覆盖所有情形：比较 $r(A)$ 与 $r(A\mid b)$ 定有解无解，比较 $r(A)$
+与 $n$ 定唯一无穷。可以说：行列式回答“这张 $n\times n$ 表满不满秩”，秩回答
+“任意一张表还剩几维信息”。
+\end{qa}
+
+\begin{example}\label{ex:param-system}
+讨论 $\lambda$ 取何值时，方程组
+\[
+  \begin{cases}
+    \lambda x_1+x_2+x_3=1, \\
+    x_1+\lambda x_2+x_3=\lambda, \\
+    x_1+x_2+\lambda x_3=\lambda^2
+  \end{cases}
+\]
+无解、有唯一解、有无穷多解。
+\end{example}
+\begin{proof}[解]
+先算系数行列式。把各列都加到第 1 列，第 1 列各元素均为 $\lambda+2$，提出
+公因子后再用 $r_i-r_1$ 化简，得
+\[
+  |A|=\begin{vmatrix} \lambda & 1 & 1 \\ 1 & \lambda & 1 \\ 1 & 1 & \lambda \end{vmatrix}
+      =(\lambda+2)\begin{vmatrix} 1 & 1 & 1 \\ 1 & \lambda & 1 \\ 1 & 1 & \lambda \end{vmatrix}
+      =(\lambda+2)(\lambda-1)^2 .
+\]
+（1）当 $\lambda\neq1$ 且 $\lambda\neq-2$ 时 $|A|\neq0$，方程组有唯一解。
+
+（2）当 $\lambda=1$ 时，三个方程都是 $x_1+x_2+x_3=1$：$r(A)=r(B)=1<n$，
+有无穷多解。
+
+（3）当 $\lambda=-2$ 时，三式相加：左端每列系数之和为 $0$，右端为
+$1-2+4=3\neq0$，出现矛盾方程 $0=3$，故 $r(B)=3>2=r(A)$，无解。
+\end{proof}
+
+\section{齐次线性方程组}\label{sec:homogeneous}
+
+齐次方程组 $Ax=0$ 总有零解，因此问题只有一个：\textbf{何时有非零解，非零解
+有多少、长什么样？}
+
+\begin{proposition}\label{prop:solution-space}
+若 $\xi_1,\xi_2$ 都是 $Ax=0$ 的解，则 $\xi_1+\xi_2$ 与 $k\xi_1$ 也都是它的解。
+因此 $Ax=0$ 的解集是一个向量空间（第三章定义~\ref{def:vector-space}），
+称为\textbf{解空间}。
+\end{proposition}
+\begin{proof}
+$A(\xi_1+\xi_2)=A\xi_1+A\xi_2=0$；$A(k\xi_1)=kA\xi_1=0$。封闭性得证。
+\end{proof}
+
+\begin{definition}\label{def:fundamental}
+解空间的一组基称为 $Ax=0$ 的\textbf{基础解系}；若 $\xi_1,\cdots,\xi_t$ 是
+基础解系，则 $Ax=0$ 的全部解为
+\[
+  x=c_1\xi_1+c_2\xi_2+\cdots+c_t\xi_t\qquad(c_1,\cdots,c_t\text{ 为任意常数}).
+\]
+\end{definition}
+
+\begin{theorem}\label{thm:fundamental}
+若 $\rank(A)=r<n$，则 $Ax=0$ 的基础解系恰含 $n-r$ 个向量，即解空间是
+$\R^n$ 中一个 $n-r$ 维的（过原点的）“平面”。
+\end{theorem}
+\begin{proof}
+对 $A$ 作行变换化为行最简形，主元列 $r$ 个，其余 $n-r$ 列对应的未知量为
+自由未知量。不失一般性设自由未知量为 $x_{r+1},\cdots,x_n$，则每个解由自由
+未知量的取值完全确定：
+\[
+  x=(x_1,\cdots,x_r,x_{r+1},\cdots,x_n)\trans,
+  \qquad x_i\ (i\le r)\text{ 由回代确定}.
+\]
+对每个 $j=1,\cdots,n-r$，取 $x_{r+j}=1$、其余自由未知量为 $0$，得解 $\xi_j$。
+一方面，$\xi_1,\cdots,\xi_{n-r}$ 的第 $r+1,\cdots,n$ 个分量排成单位矩阵，
+故它们线性无关（部分分量无关则整体无关）。另一方面，任一解 $x$ 以其自由
+分量 $c_{r+1},\cdots,c_n$ 为系数满足
+$x=\sum_{j}c_{r+j}\xi_j$（两边自由分量相同，主元分量由同一回代公式确定）。
+故 $\xi_1,\cdots,\xi_{n-r}$ 是解空间的基，含 $n-r$ 个向量。
+\end{proof}
+
+\begin{insight}[本质：被压掉的信息以解的身份“回来”了]
+把 $A$ 看作变换：像空间（列空间）是 $r$ 维，零空间（解空间）是 $n-r$ 维，
+两者恰好把 $\R^n$ 分摊干净：
+\[
+  \underbrace{r}_{\text{保留的维数}}+\underbrace{(n-r)}_{\text{被压成零的维数}}=n .
+\]
+这就是\textbf{维数公式} $r(A)+\dim N(A)=n$ 的内容。矩阵秩越高、“个性”越强，
+能压成零的方向就越少；满秩方阵（$r=n$）把零空间压到只剩零向量，方程组
+$Ax=0$ 只有零解——与第一章推论~\ref{cor:homog} 再次呼应。
+\end{insight}
+
+\begin{qa}{自由未知量的个数为什么恰好是 $n-r$？基础解系为什么恰好 $n-r$ 个向量？}
+答：行最简形有 $r$ 个主元，每个主元“钉死”一个未知量（它由其余未知量表出），
+剩下 $n-r$ 个自由列各贡献一个可任意取值的未知量——自由度是 $n-r$。构造基础
+解系时，每次令一个自由未知量取 $1$、其余取 $0$，得到一个解；$n-r$ 个解的自由
+分量恰排成单位矩阵，保证它们线性无关；而任何解的组合系数就是它自己的自由
+分量，保证它们张满整个解空间。于是“不多不少，恰好 $n-r$ 个”。
+\end{qa}
+
+\begin{example}\label{ex:fundamental}
+求齐次方程组 $\begin{cases} x_1+x_2+x_3+x_4=0, \\ 2x_1+3x_2+4x_3+5x_4=0 \end{cases}$
+的基础解系与通解。
+\end{example}
+\begin{proof}[解]
+\[
+  A=\begin{pmatrix} 1 & 1 & 1 & 1 \\ 2 & 3 & 4 & 5 \end{pmatrix}
+  \xrightarrow{\ r_2-2r_1\ }
+  \begin{pmatrix} 1 & 1 & 1 & 1 \\ 0 & 1 & 2 & 3 \end{pmatrix}
+  \xrightarrow{\ r_1-r_2\ }
+  \begin{pmatrix} 1 & 0 & -1 & -2 \\ 0 & 1 & 2 & 3 \end{pmatrix},
+\]
+$r=2$，$x_3,x_4$ 自由，且 $x_1=x_3+2x_4$，$x_2=-2x_3-3x_4$。分别取
+$(x_3,x_4)=(1,0)$ 与 $(0,1)$：
+\[
+  \xi_1=(1,-2,1,0)\trans,\qquad \xi_2=(2,-3,0,1)\trans,
+\]
+即基础解系（$n-r=2$ 个），通解为 $x=c_1\xi_1+c_2\xi_2$。可验证
+$A\xi_1=A\xi_2=0$。
+\end{proof}
+
+\section{非齐次线性方程组：解的结构}\label{sec:nonhomogeneous}
+
+\begin{proposition}\label{prop:nonhomog-diff}
+设 $\eta_1,\eta_2$ 是 $Ax=b$（$b\neq0$）的解，则 $\eta_1-\eta_2$ 是 $Ax=0$
+的解；又设 $\eta^*$ 是 $Ax=b$ 的一个解（\textbf{特解}），$\xi$ 是 $Ax=0$ 的
+解，则 $\eta^*+\xi$ 仍是 $Ax=b$ 的解。
+\end{proposition}
+\begin{proof}
+$A(\eta_1-\eta_2)=A\eta_1-A\eta_2=b-b=0$；$A(\eta^*+\xi)=b+0=b$。
+\end{proof}
+
+\begin{theorem}[解的结构定理]\label{thm:nonhomog-structure}
+设 $Ax=b$（$b\neq0$）有解，$\eta^*$ 是它的一个特解，$\xi_1,\cdots,\xi_{n-r}$
+是 $Ax=0$ 的基础解系（$r=\rank(A)$），则其\textbf{全部解}为
+\[
+  x=\eta^*+c_1\xi_1+\cdots+c_{n-r}\xi_{n-r}\qquad(c_i\text{ 为任意常数}).
+\]
+\end{theorem}
+\begin{proof}
+一方面，$\eta^*+c_1\xi_1+\cdots$ 形如“特解 $+$ 齐次解”，由命题
+~\ref{prop:nonhomog-diff} 都是 $Ax=b$ 的解。另一方面，设 $x$ 是任一解，则
+$x-\eta^*$ 是 $Ax=0$ 的解，故可由基础解系线性表示：
+$x-\eta^*=\sum c_i\xi_i$。两个方向合起来即得全部解。
+\end{proof}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[>=Stealth, scale=1.0]
+  \draw[->] (-2.4,0) -- (2.8,0) node[right] {$x_1$};
+  \draw[->] (0,-1.3) -- (0,2.4) node[above] {$x_2$};
+  \draw[dashed, gray, very thick] (-2.3,1.15) -- (2.6,-1.3)
+        node[below left] {\small 解空间 $S{:}\ Ax=0$};
+  \draw[very thick, red!70!black] (-2.3,2.35) -- (2.6,-0.1)
+        node[below right] {\small 解集 $\eta^*+S$};
+  \draw[->, very thick, blue!60!black] (0,0) -- (0.5,1.75)
+        node[above right] {$\eta^*$};
+  \draw[->, gray] (0.5,1.75) -- (1.6,1.2) node[right] {\small $\xi$（沿 $S$ 方向滑动）};
+\end{tikzpicture}
+\caption{非齐次方程组的解集 = 把齐次解空间整体平移到特解处。特解是“锚点”，
+齐次解给出在“平面”内自由滑动的方向。}
+\label{fig:translate}
+\end{figure}
+
+\begin{qa}{为什么“特解 $+$ 齐次通解”就是全部解？增广矩阵多了一列，秩为什么至多多 1？}
+答：第一个问题分两个方向：任取“特解 $+$ 齐次解”，代入验证仍是解（命题
+~\ref{prop:nonhomog-diff}）；反之任一解减去特解就是齐次解（差的验证），
+从而必落在齐次通解里。几何上（图~\ref{fig:translate}）：解集是一张\textbf{不过
+原点}、与解空间平行的“平面”，特解给出它的锚点，齐次基础解系给出平面内的
+滑动方向。第二个问题：增广矩阵只比 $A$ 多一列，列空间至多多出一个方向，
+故 $r(A)\le r(B)\le r(A)+1$——“有解无解”的分歧恰好发生在这 $+1$ 上。
+\end{qa}
+
+\begin{example}\label{ex:nonhomog}
+求 $\begin{cases} x_1+x_2+x_3=3, \\ x_1+2x_2+3x_3=6 \end{cases}$ 的通解。
+\end{example}
+\begin{proof}[解]
+\[
+  B=\begin{pmatrix} 1 & 1 & 1 &\vline& 3 \\ 1 & 2 & 3 &\vline& 6 \end{pmatrix}
+  \xrightarrow{\ r_2-r_1\ }
+  \begin{pmatrix} 1 & 1 & 1 &\vline& 3 \\ 0 & 1 & 2 &\vline& 3 \end{pmatrix}
+  \xrightarrow{\ r_1-r_2\ }
+  \begin{pmatrix} 1 & 0 & -1 &\vline& 0 \\ 0 & 1 & 2 &\vline& 3 \end{pmatrix}.
+\]
+$r(A)=r(B)=2<3$，有无穷多解。取 $x_3=0$ 得特解 $\eta^*=(0,3,0)\trans$；
+令 $x_3=1$ 得齐次解 $\xi=(1,-2,1)\trans$。通解为
+\[
+  x=(0,3,0)\trans+c\,(1,-2,1)\trans\qquad(c\text{ 为任意常数}).\qedhere
+\]
+\end{proof}
+
+\chapterexercises{四}
+
+\begin{enumerate}[label=\arabic*., itemsep=2pt]
+\item 解方程组 $\begin{cases} x_1+x_2+x_3=2, \\ x_1+2x_2+2x_3=3, \\ x_2+x_3=1. \end{cases}$
+\item 求齐次方程组
+  $\begin{cases} x_1+2x_2+3x_3=0, \\ 2x_1+4x_2+6x_3=0, \\ 3x_1+6x_2+9x_3=0 \end{cases}$
+  的基础解系与通解。
+\item 求通解：$\begin{cases} x_1+x_2+x_3+x_4=4, \\ x_1+2x_2+3x_3+4x_4=10. \end{cases}$
+\item $\lambda$ 取何值时，齐次方程组
+  $\begin{cases} (\lambda+1)x_1+x_2+x_3=0, \\ x_1+(\lambda+1)x_2+x_3=0, \\
+  x_1+x_2+(\lambda+1)x_3=0 \end{cases}$
+  有非零解？求出此时的基础解系。
+\item 证明命题~\ref{prop:solution-space}：齐次方程组的解集是向量空间。
+\item 证明定理~\ref{thm:nonhomog-structure} 的两个核心断言：非齐次两解之差
+  是齐次解；非齐次解集等于“特解 $+$ 齐次解集”。
+\item 解方程组 $\begin{cases} x_1+2x_2+3x_3=6, \\ 2x_1+3x_2+x_3=6, \\
+  x_1+x_2+x_3=3. \end{cases}$
+\item 证明：方程个数少于未知数个数的齐次方程组必有非零解（用秩，并指出它与
+  定理~\ref{thm:more-than-n} 的关系）。
+\item 设 $Ax=b$ 有解且 $\rank(A)=r<n$，问通解中含有几个任意常数？为什么？
+\item 证明：$\rank(A)\le\rank(A\mid b)\le\rank(A)+1$。（提示：增广矩阵比 $A$
+  只多一列，列空间至多扩大一维。）
+\end{enumerate}
